@@ -30,17 +30,18 @@
 
     <!-- задачи -->
     <v-list>
-      <v-list-item :to="{ name: 'tasks', params: { id: list.id} }" v-for="(list, i) in lists" :key="i">
+      <v-list-item :to="{ name: 'tasks', params: { id: list.id} }" v-for="(list, i) in LISTS" :key="i">
+        <!-- delete doesni work yet -->
         <v-list-item-action>
-          <v-btn @click="openModal(list.id)" icon>
-            <v-icon>edit</v-icon>
+          <v-btn @click="deleteList(list.id)" icon>
+            <v-icon>delete</v-icon>
           </v-btn>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>{{ list.title }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>
-          <v-list-item-title>{{ list.tasks }}</v-list-item-title>
+          <v-list-item-title>{{ countTasks(list.id) }}</v-list-item-title>
         </v-list-item-action>
       </v-list-item>
     </v-list>
@@ -80,29 +81,14 @@
 
 <script>
   import NewList from './NewList'
-
+  import {mapGetters} from 'vuex'
+ 
   export default {
     name: 'lists',
     components: {
       NewList
     },
     data: () => ({
-      lists: [{
-          id: 1,
-          title: "list 1",
-          tasks: 12
-        },
-        {
-          id: 2,
-          title: "list 2",
-          tasks: 45
-        },
-        {
-          id: 3,
-          title: "list 3",
-          tasks: 0
-        },
-      ],
       items: [{
           action: "sort",
           title: "Сортировать по",
@@ -135,9 +121,7 @@
       ]
     }),
     computed: {
-       show () {
-        return this.$route.params.id
-      },
+      ...mapGetters(['LISTS']),
       openNewListFormValue: {
         get() {
           return this.$store.getters.NEW_LIST_FORM
@@ -150,15 +134,27 @@
         return this.$store.getters.NEW_LIST_FORM
       }
     },
+    mounted () {
+      this.$store.dispatch("GET_LISTS")
+    },
     methods: {
       openNewListForm() {
-        console.log("openNewListForm");
+        this.$store.commit("SET_NEW_LIST_FORM", true)
       },
       sort(value) {
         console.log(value)
       },
       filter(value) {
         console.log(value)
+      },
+
+      countTasks(index) {
+        if (this.$store.getters.COUNT_TASKS(index) == undefined) {
+          return 0
+        } else {
+          return this.$store.getters.COUNT_TASKS(index)
+        }
+        
       }
     }
   }
