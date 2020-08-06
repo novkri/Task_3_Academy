@@ -36,6 +36,7 @@
             this.$store.commit("SET_NEW_LIST_FORM", false)
           })
       },
+      
       closeForm() {
         this.$store.commit("SET_NEW_LIST_FORM", false)
       }

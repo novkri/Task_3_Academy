@@ -19,80 +19,10 @@
       ]
     },
     {
-      "id": 2,
-      "title": "list 2",
-      "tasks": [
-        {
-          "id": 1,
-          "title": "djnfksdf",
-          "subtitle": "somw ubtitle",
-          "isComplete": true
-        },
-        {
-          "id": 2,
-          "title": "'task title'",
-          "subtitle": "somw subtitle",
-          "isComplete": false
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "title": "list 3",
-      "tasks": []
-    },
-    {
-      "id": 4,
-      "title": "list 4",
-      "tasks": [
-        {
-          "id": 1,
-          "title": "djnfksdf",
-          "subtitle": "somw ubtitle",
-          "isComplete": true
-        },
-        {
-          "id": 2,
-          "title": "'task title'",
-          "subtitle": "somw subtitle",
-          "isComplete": false
-        }
-      ]
-    },
-    {
-      "title": "gjgjhgh",
-      "id": 5,
-      "tasks": []
-    },
-    {
-      "title": "dfgdfg",
-      "tasks": [],
-      "id": 6
-    },
-    {
-      "title": "mn,m",
-      "tasks": [],
-      "id": 7
-    },
-    {
-      "title": "fhghfg",
-      "tasks": [],
-      "id": 8
-    },
-    {
-      "title": "fgdfgd",
-      "tasks": [],
-      "id": 9
-    },
-    {
-      "title": "fhfghfgh",
-      "tasks": [],
-      "id": 10
-    },
-    {
-      "title": "gdfgdfgg",
-      "tasks": [],
-      "id": 11
+      "title": "sfsdfds",
+      "subtitle": "",
+      "isComplete": false,
+      "id": 2
     }
   ]
 }

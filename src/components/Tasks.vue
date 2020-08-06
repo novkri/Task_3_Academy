@@ -2,7 +2,7 @@
   <div>
     <v-card style="height: 100%; overflow: hidden;">
       <!-- список -->
-      <v-list two-line v-for="(task, index) in tasks" :key="index">
+      <v-list two-line v-for="(task, index) in TASKS" :key="index">
         <v-list-item @click.prevent="toggle(index)">
           <v-checkbox v-model="task.isComplete" color="success"></v-checkbox>
 
@@ -38,6 +38,7 @@
 
 <script>
   import NewTask from './NewTask'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'tasks',
@@ -48,45 +49,52 @@
       NewTask
     },
     data: () => ({
-      tasks: [{
-          id: 1,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: true
-        },
-        {
-          id: 2,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: false
-        }, {
-          id: 3,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: true
-        }, {
-          id: 4,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: false
-        }, {
-          id: 5,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: true
-        }, {
-          id: 6,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: true
-        }, {
-          id: 7,
-          title: 'task title',
-          subtitle: "somw subtitle",
-          isComplete: true
-        },
-      ]
+      // tasks: [{
+      //     id: 1,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: true
+      //   },
+      //   {
+      //     id: 2,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: false
+      //   }, {
+      //     id: 3,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: true
+      //   }, {
+      //     id: 4,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: false
+      //   }, {
+      //     id: 5,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: true
+      //   }, {
+      //     id: 6,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: true
+      //   }, {
+      //     id: 7,
+      //     title: 'task title',
+      //     subtitle: "somw subtitle",
+      //     isComplete: true
+      //   },
+      // ]
     }),
+    computed: {
+      ...mapGetters(['TASKS'])
+    },
+    async mounted () {
+      let res = await this.$store.dispatch("GET_TASKS", this.$route.params.id)
+      console.log(res);
+    },
     methods: {
       toggle(index) {
 

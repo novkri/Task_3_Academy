@@ -134,8 +134,8 @@
         return this.$store.getters.NEW_LIST_FORM
       }
     },
-    mounted () {
-      this.$store.dispatch("GET_LISTS")
+    async mounted () {
+      await this.$store.dispatch("GET_LISTS")
     },
     methods: {
       openNewListForm() {

@@ -14,9 +14,23 @@ export default {
     }
   }),
   methods: {
-    submit () {
-      console.log("submitted");
-      // отправить в массив подзадач!
+     submit () {
+       console.log("submit start");
+         this.$store.dispatch("POST_TASK", {
+            listid: this.$route.params.id,
+            title: this.title,
+            subtitle: '',
+            isComplete: false
+          })
+          .then(response => {
+            // + окошко с вопросом 
+            console.log(response, "submit done");
+            this.title = ''
+
+            })
+            .catch(error => console.log(error))
+            // this.$store.commit("SET_NEW_LIST_FORM", false)
+          
     },
     closeForm () {
       console.log("closeForm");
