@@ -40,9 +40,6 @@
         <v-list-item-content>
           <v-list-item-title>{{ list.title }}</v-list-item-title>
         </v-list-item-content>
-        <!-- <v-list-item-action>
-          <v-list-item-title>{{ countTasks(list.id) }}</v-list-item-title>
-        </v-list-item-action> -->
       </v-list-item>
     </v-list>
 
@@ -66,16 +63,6 @@
         <NewList />
       </v-list-item>
     </v-list>
-
-    <!-- удалить задачу -->
-        <!-- <v-list-item @click="deleteList()">  это метода еще нет deleteList -->
-          <!-- <v-list-item-content>
-            <v-list-item-title color="danger">
-              Удалить Задание (не работает)
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-    </v-list> --> 
   </v-navigation-drawer>
 </template>
 
@@ -148,14 +135,18 @@
         console.log(value)
       },
 
-      // countTasks(index) {
-      //   if (this.$store.getters.COUNT_TASKS(index) == undefined) {
-      //     return 0
-      //   } else {
-      //     return this.$store.getters.COUNT_TASKS(index)
-      //   }
-        
-      // }
+      async deleteList(index) {
+        await this.$store.dispatch("DELETE_LIST", index).then(response => {
+            // + окошко с вопросом 
+
+            // + перенаправлнеи на lists/
+            this.$router.push({
+              name: 'todo'
+            })
+            console.log(response, "DELETE_LIST done");
+          })
+          .catch(error => console.log(error))
+      }
     }
   }
 </script>

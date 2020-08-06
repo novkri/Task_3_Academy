@@ -47,13 +47,20 @@ export default new Vuex.Store({
             state.lists.push(payload)
         },
 
-        // подхадачи
+        REMOVE_LIST: (state, payload) => {
+            state.lists.shift(payload)
+        },
+
+
+        // подзадачи
         SET_TASKS: (state, {data, listid}) => {
             state.tasks = data
+            console.log(listid);
         },
 
         ADD_TASK: (state, {data}) => {
             let {id, ...rest} = data
+            console.log(id);
             state.tasks.push(rest)
         },
         
@@ -65,6 +72,7 @@ export default new Vuex.Store({
             commit("SET_LISTS", data)
         },
         POST_LIST: ({commit}, payload) => {
+            console.log("POST_LIST", payload);
             return new Promise((resolve, reject) => {
                 axios.post('http://localhost:3000/lists', payload).then(res => {
                     commit("ADD_LIST", res.data)
@@ -76,13 +84,23 @@ export default new Vuex.Store({
             })
         },
 
+        DELETE_LIST: async ({commit}, payload) => {
+            // payload == id
+            console.log(payload);
+            // let {data} = 
+            await axios.delete(`http://localhost:3000/lists?id=${payload}`).then(res => {
+                commit("REMOVE_LIST", res.data)
+            })
+            
+        },
+
+        
         // подзадачи
         GET_TASKS: async ({commit}, payload) => {
             let {data} = await axios.get(`http://localhost:3000/lists/${payload}/tasks`)
             commit("SET_TASKS", {data, listid: payload})
         },
 
-        //тут проблема!
         POST_TASK: ({commit}, {listid, ...rest}) => {
             return new Promise((resolve, reject) => {
                 axios.post(`http://localhost:3000/lists/${listid}/tasks`, rest).then(res => {

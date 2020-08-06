@@ -9,8 +9,12 @@
           <v-list-item-content>
             <!-- добавить зачеркивание -->
             <v-list-item-title>{{ task.title }}</v-list-item-title>
-            <v-list-item-title>{{ task.subtitle }}</v-list-item-title>
           </v-list-item-content>
+
+          <!-- срочное -->
+          <v-icon v-if="task.isUrgent" color="red">info</v-icon>
+          <v-icon v-else></v-icon>
+     
 
           <!-- delete doesni work yet -->
           <v-list-item-action>
@@ -49,50 +53,12 @@
       NewTask
     },
     data: () => ({
-      // tasks: [{
-      //     id: 1,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: true
-      //   },
-      //   {
-      //     id: 2,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: false
-      //   }, {
-      //     id: 3,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: true
-      //   }, {
-      //     id: 4,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: false
-      //   }, {
-      //     id: 5,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: true
-      //   }, {
-      //     id: 6,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: true
-      //   }, {
-      //     id: 7,
-      //     title: 'task title',
-      //     subtitle: "somw subtitle",
-      //     isComplete: true
-      //   },
-      // ]
     }),
     computed: {
       ...mapGetters(['TASKS'])
     },
     async mounted () {
-      let res = await this.$store.dispatch("GET_TASKS", this.$route.params.id)
+      await this.$store.dispatch("GET_TASKS", this.$route.params.id)
     },
     methods: {
       toggle(index) {
