@@ -93,7 +93,6 @@
     },
     async mounted () {
       let res = await this.$store.dispatch("GET_TASKS", this.$route.params.id)
-      console.log(res);
     },
     methods: {
       toggle(index) {

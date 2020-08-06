@@ -19,8 +19,7 @@
     methods: {
       submit() {
         this.$store.dispatch("POST_LIST", {
-            title: this.title,
-            tasks: []
+            title: this.title
           })
           .then(response => {
             // + окошко с вопросом ?

@@ -40,9 +40,9 @@
         <v-list-item-content>
           <v-list-item-title>{{ list.title }}</v-list-item-title>
         </v-list-item-content>
-        <v-list-item-action>
+        <!-- <v-list-item-action>
           <v-list-item-title>{{ countTasks(list.id) }}</v-list-item-title>
-        </v-list-item-action>
+        </v-list-item-action> -->
       </v-list-item>
     </v-list>
 
@@ -148,14 +148,14 @@
         console.log(value)
       },
 
-      countTasks(index) {
-        if (this.$store.getters.COUNT_TASKS(index) == undefined) {
-          return 0
-        } else {
-          return this.$store.getters.COUNT_TASKS(index)
-        }
+      // countTasks(index) {
+      //   if (this.$store.getters.COUNT_TASKS(index) == undefined) {
+      //     return 0
+      //   } else {
+      //     return this.$store.getters.COUNT_TASKS(index)
+      //   }
         
-      }
+      // }
     }
   }
 </script>

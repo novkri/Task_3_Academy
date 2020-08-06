@@ -26,11 +26,6 @@ export default new Vuex.Store({
         LISTS: state => {
             return state.lists
         },
-        COUNT_TASKS: state => index => {
-            if (index) {
-                return state.lists.find(list => list.id === index).tasks.length
-            }
-        },
 
         // подзадачи
         TASKS: state => {
@@ -53,19 +48,13 @@ export default new Vuex.Store({
         },
 
         // подхадачи
-        SET_TASKS: (state, {dataTask, listid}) => {
-            // console.log("set ",payload);
-            console.log(listid);
-            state.tasks = dataTask
+        SET_TASKS: (state, {data, listid}) => {
+            state.tasks = data
         },
+
         ADD_TASK: (state, {data}) => {
             let {id, ...rest} = data
-            console.log(id, rest);
-            console.log("ADD_TASK");
-            console.log(state.lists.find(list => list.id === id));
-            state.lists.find(list => list.id === id).tasks = rest
-            // let tasksArr = state.lists.find(list => list.id === id).tasks
-            // tasksArr.push(rest)
+            state.tasks.push(rest)
         },
         
     },
@@ -89,17 +78,14 @@ export default new Vuex.Store({
 
         // подзадачи
         GET_TASKS: async ({commit}, payload) => {
-            let {data} = await axios.get(`http://localhost:3000/lists/${payload}`)
-            let dataTask = data.tasks
-            commit("SET_TASKS", {dataTask, listid: payload})
+            let {data} = await axios.get(`http://localhost:3000/lists/${payload}/tasks`)
+            commit("SET_TASKS", {data, listid: payload})
         },
 
+        //тут проблема!
         POST_TASK: ({commit}, {listid, ...rest}) => {
             return new Promise((resolve, reject) => {
-                console.log("payload task ",listid, "and ", rest);
-                axios.put(`http://localhost:3000/lists/${listid}`, rest).then(res => {
-                    console.log('here', res, res.data.id);
-                    // let id = res.data.id
+                axios.post(`http://localhost:3000/lists/${listid}/tasks`, rest).then(res => {
                     commit("ADD_TASK", res)
                     resolve(res)
                 })
