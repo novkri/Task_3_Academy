@@ -3,11 +3,17 @@
 
 Для имитации базы данных использовался json-server
 
-### Запуск с json-serverом
+### Запуск с json-serverом (windows)
 ```
 npm run serve
 
 ```
+### Запуск с json-serverом (unix)
+```
+npm run serve2
+
+```
+
 ### Запуск без сервера
 ```
 npm run run

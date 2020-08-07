@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "start json-server --watch db.json --routes routes.json && start vue-cli-service serve",
-    "run": "start vue-cli-service serve",
+    "serve": "start json-server --watch ./db/db.json --routes ./db/routes.json && start vue-cli-service serve",
+    "serve2": "json-server --watch ./db/db.json --routes ./db/routes.json & vue-cli-service serve",
+    "run": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
