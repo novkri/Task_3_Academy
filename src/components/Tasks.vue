@@ -18,7 +18,7 @@
 
           <!-- delete doesni work yet -->
           <v-list-item-action>
-            <v-btn @click="deleteTask(task.id)" icon>
+            <v-btn @click.prevent="deleteTask(task.id)" icon>
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -85,7 +85,8 @@
 
             // + перенаправлнеи на lists/
             // this.$router.push({
-            //   name: 'todo'
+            //   name: 'task',
+            //   params: {taskId: this.$route.params.id}
             // })
             console.log(response, "DELETE_TASK done");
           })

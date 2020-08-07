@@ -9,56 +9,8 @@
       "title": "sometitle2"
     },
     {
-      "title": "gdfgdfg",
-      "id": 4
-    },
-    {
-      "_method": "delete",
-      "id": 5
-    },
-    {
-      "_method": "delete",
-      "id": 6
-    },
-    {
-      "_method": "delete",
+      "title": "fdgdfg",
       "id": 7
-    },
-    {
-      "_method": "delete",
-      "id": 8
-    },
-    {
-      "_method": "delete",
-      "id": 9
-    },
-    {
-      "_method": "delete",
-      "id": 10
-    },
-    {
-      "_method": "delete",
-      "id": 11
-    },
-    {
-      "_method": "delete",
-      "id": 12
-    },
-    {
-      "_method": "delete",
-      "id": 13
-    },
-    {
-      "_method": "delete",
-      "id": 14
-    },
-    {
-      "_method": "delete",
-      "id": 15
-    },
-    {
-      "_method": "delete",
-      "id": 16
     }
   ],
   "tasks": [
@@ -110,83 +62,6 @@
       "isUrgent": false,
       "listId": "1",
       "id": 5
-    },
-    {
-      "title": "fdgdfgdfg",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 6
-    },
-    {
-      "title": "dgdfg",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 7
-    },
-    {
-      "title": "fdgdfg",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 8
-    },
-    {
-      "title": "3",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 9
-    },
-    {
-      "title": "4",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 10
-    },
-    {
-      "title": "5",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 11
-    },
-    {
-      "title": "6",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 12
-    },
-    {
-      "title": "dfgdfg",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 13
-    },
-    {
-      "title": "hfgh",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 14
-    },
-    {
-      "title": "sfsdf",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 15
-    },
-    {
-      "title": "sdfsdf",
-      "isComplete": false,
-      "isUrgent": false,
-      "listId": "4",
-      "id": 16
     }
   ]
 }

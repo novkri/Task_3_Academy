@@ -23,7 +23,14 @@ const routes = [
       {
         path: '/list/:id',
         components: { tasks: Tasks},
-        name: 'tasks'
+        name: 'tasks',
+        children: [
+          {
+            path: "task/:taskId",
+            // components: { notes: NotesModal },
+            name: "task"
+          }
+        ]
       },
     ]
   }

@@ -140,9 +140,9 @@
             // + окошко с вопросом 
 
             // + перенаправлнеи на lists/
-            this.$router.push({
-              name: 'todo'
-            })
+            // this.$router.push({
+            //   name: 'todo'
+            // })
             console.log(response, "DELETE_LIST done");
           })
           .catch(error => console.log(error))
