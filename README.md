@@ -1,5 +1,9 @@
 # TODO app
 
+## Project setup
+```
+npm install
+```
 
 Для имитации базы данных использовался json-server
 
@@ -18,10 +22,6 @@ npm run serve2
 ```
 npm run run
 
-```
-## Project setup
-```
-npm install
 ```
 
 ### Compiles and minifies for production

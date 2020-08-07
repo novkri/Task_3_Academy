@@ -64,10 +64,12 @@ export default new Vuex.Store({
             state.tasks.push(rest)
         },
 
-        REMOVE_TASK: (state, {data}) => {
-            let {id, ...rest} = data
+        REMOVE_TASK: (state, {id, method}) => {
+            console.log("REMOVE_TASK", method);
+            // let {id, ...rest} = data
             console.log(id);
-            state.tasks.shift(rest)
+            let data = state.tasks.find(task => task.id === id)
+            state.tasks.shift(data)
         },
 
         
@@ -116,18 +118,16 @@ export default new Vuex.Store({
                 })
             })
         },
-
-
-
-        /// NOT WORKING!
+       
         DELETE_TASK: ({commit}, {listid, index}) => {
             console.log("DELETE_TASK", listid, index)
-            // let data = this.tasks.find(task => task.id === index)
-            // console.log("data", data);
-            return new Promise ( (resolve, reject) => { axios.delete(`http://localhost:3000/lists/${listid}/tasks?id=${index}`).then(res => {
+            return new Promise ( (resolve, reject) => {  
+                /// NOT WORKING!
+                // axios.delete(`http://localhost:3000/lists/${listid}/tasks?id=${index}`)
+                axios.post(`http://localhost:3000/lists/${listid}/tasks?id=${index}`,{_method: 'delete'})
+                .then(res => {
                 console.log("res", res);
                 commit("REMOVE_TASK", res.data)
-                resolve(res)
             })
             .catch(error => {
                 reject(error)
