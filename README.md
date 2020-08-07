@@ -10,7 +10,7 @@ npm run serve
 ```
 ### Запуск без сервера
 ```
-npm run serve
+npm run run
 
 ```
 ## Project setup
