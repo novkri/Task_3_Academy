@@ -3,7 +3,7 @@
     <v-card style="height: 100%; overflow: hidden;">
       <!-- список -->
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
-        <v-list-item @click.prevent="toggle(index)">
+        <v-list-item @click.prevent="toggle(task.id)">
           <v-checkbox v-model="task.isComplete" color="success"></v-checkbox>
 
           <v-list-item-content>
@@ -73,6 +73,23 @@
           //   taskId: this.task.id
           // }
         })
+      },
+
+      async deleteTask(index) {
+        console.log("index", index);
+        await this.$store.dispatch("DELETE_TASK", {
+          listid: this.$route.params.id,
+          index
+        }).then(response => {
+            // + окошко с вопросом 
+
+            // + перенаправлнеи на lists/
+            // this.$router.push({
+            //   name: 'todo'
+            // })
+            console.log(response, "DELETE_TASK done");
+          })
+          .catch(error => console.log(error))
       }
     }
   }

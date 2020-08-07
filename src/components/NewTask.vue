@@ -1,5 +1,5 @@
 <template>
-  <v-form @submit.prevent="submit()" ref="form">
+  <v-form @submit.prevent="submit()">
     <!-- внешний вид -->
       <!-- <v-row justify="space-between">
         <v-col lg="7" > -->
@@ -45,9 +45,6 @@
 
           })
           .catch(error => console.log(error))
-
-
-          this.$refs.form.submit()
       },
       
     }
