@@ -1,46 +1,46 @@
 <template>
+<div>
   <v-navigation-drawer permanent style="width: 100%;">
+
     <v-toolbar dark>
       <v-toolbar-title>Задачи</v-toolbar-title>
     </v-toolbar>
-  
     <!-- фильтры и сортировка -->
 
-        <v-list dense>
-          <v-list-group v-model="item.active" v-for="(item, i) in items" :key="i" no-action>
-            <v-list-item slot="activator">
-              <v-list-item-icon>
-                <v-icon v-text="item.action"></v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="item.title"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+    <v-list dense>
+      <v-list-group v-model="item.active" v-for="(item, i) in items" :key="i" no-action>
+        <v-list-item slot="activator">
+          <v-list-item-icon>
+            <v-icon v-text="item.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
-            <v-list-item v-for="(subitem, i) in item.items" :key="i" active-class
-              v-on="item.action === 'sort' ? { click: () => sort(subitem.by) } : { click: () => filter(subitem.by)}">
-              <v-list-item-content>
-                <v-list-item-title>{{ subitem.title }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-group>
-        </v-list>
+        <v-list-item v-for="(subitem, i) in item.items" :key="i" active-class
+          v-on="item.action === 'sort' ? { click: () => sort(subitem.by) } : { click: () => filter(subitem.by)}">
+          <v-list-item-content>
+            <v-list-item-title>{{ subitem.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-group>
+    </v-list>
 
     <v-divider></v-divider>
 
-    <!-- задачи -->
     <v-list>
-      <v-list-item :to="{ name: 'tasks', params: { id: list.id} }" v-for="(list, i) in LISTS" :key="i">
-        <!-- delete doesni work yet -->
+      <v-list-item v-for="(list, i) in LISTS" :key="i" @click.prevent="toggle(list.id)">
+        
         <v-list-item-action>
-          <v-btn @click="deleteList(list.id)" icon>
-            <v-icon>delete</v-icon>
-          </v-btn>
+          <v-btn icon @click.stop="openModal()"><v-icon>delete</v-icon></v-btn>
         </v-list-item-action>
+
         <v-list-item-content>
           <v-list-item-title>{{ list.title }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
     </v-list>
 
     <v-divider></v-divider>
@@ -63,29 +63,38 @@
         <NewList />
       </v-list-item>
     </v-list>
+
+    
   </v-navigation-drawer>
+  <Popup v-if="open" @closePopup="closePopup"/>
+</div>
+  
 </template>
 
 <script>
   import NewList from './NewList'
-  import {mapGetters} from 'vuex'
- 
+  import Popup from './Popup'
+  import {
+    mapGetters
+  } from 'vuex'
+
   export default {
     name: 'lists',
     components: {
-      NewList
+      NewList,
+      Popup
     },
     data: () => ({
+      open: false,
+      dialog: false,
       items: [{
           action: "sort",
           title: "Сортировать по",
           active: false,
-          items: [
-            {
-              title: "имени",
-              by: "name"
-            },
-          ]
+          items: [{
+            title: "имени",
+            by: "name"
+          }, ]
         },
         {
           action: "filter_list",
@@ -119,12 +128,40 @@
       },
       isOpen() {
         return this.$store.getters.NEW_LIST_FORM
-      }
+      },
+      // // computed: {
+      // canCreate() {
+      //   return this.list.title.trim() && this.task.title.trim()
+      // }
     },
-    async mounted () {
+    async mounted() {
       await this.$store.dispatch("GET_LISTS")
     },
     methods: {
+      closePopup () {
+        console.log("this.open close", this.open);
+        this.open = false
+        console.log("this.open close", this.open);
+      },
+      openModal() {
+        console.log("openModal");
+        console.log("this.ope2n", this.open);
+        this.open = true
+        console.log("this.open2", this.open);
+      },
+      toggle(idx) {
+        console.log(this.$route.params.id, idx);
+        if (this.$route.params.id !== idx) {
+          this.$router.push({
+            name: 'tasks',
+            params: {
+              id: idx
+            }
+          })
+        } else {
+          console.log(this.$route.params.id,"=", idx);
+        }
+      },
       openNewListForm() {
         this.$store.commit("SET_NEW_LIST_FORM", true)
       },

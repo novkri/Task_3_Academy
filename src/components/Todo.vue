@@ -8,8 +8,6 @@
         <v-col lg8>
           <router-view name="tasks" :key="$route.fullPath"></router-view>
         </v-col>
-
-
       </v-row>
      </v-container>
 </template>
@@ -20,7 +18,11 @@
   export default {
     name: "todo",
     components: {
-      Lists
-    }
+      Lists,
+    },
+    data: () => ({
+      isVisible: false
+    })
+    
   }
 </script>

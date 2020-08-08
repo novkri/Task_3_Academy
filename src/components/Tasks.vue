@@ -9,6 +9,7 @@
           <v-list-item-content>
             <!-- добавить зачеркивание -->
             <v-list-item-title>{{ task.title }}</v-list-item-title>
+             <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
           <!-- срочное -->

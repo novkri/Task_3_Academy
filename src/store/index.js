@@ -48,7 +48,6 @@ export default new Vuex.Store({
     },
 
     REMOVE_LIST: (state, payload) => {
-      // state.lists.shift(payload)
       console.log("REMOVE_LIST", payload);
       state.lists = state.lists.filter(list => list.id !== payload)
     },
@@ -110,16 +109,10 @@ export default new Vuex.Store({
     // подзадачи
     GET_TASKS: async ({ commit }, payload) => {
       let { data } = await axios.get(`http://localhost:3000/lists/${payload}/tasks`)
-      commit("SET_TASKS", {
-        data,
-        listid: payload
-      })
+      commit("SET_TASKS", {data,listid: payload})
     },
 
-    POST_TASK: ({ commit }, {
-      listid,
-      ...rest
-    }) => {
+    POST_TASK: ({ commit }, {listid,...rest}) => {
       return new Promise((resolve, reject) => {
         axios.post(`http://localhost:3000/lists/${listid}/tasks`, rest).then(res => {
             commit("ADD_TASK", res)
@@ -131,10 +124,7 @@ export default new Vuex.Store({
       })
     },
 
-    DELETE_TASK: ({ commit }, {
-      listid,
-      index
-    }) => {
+    DELETE_TASK: ({ commit }, {listid,index}) => {
       console.log("DELETE_TASK", listid, index)
       return new Promise((resolve, reject) => {
         axios.delete(`http://localhost:3000/tasks/${index}`)

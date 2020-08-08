@@ -18,6 +18,7 @@
     }),
     methods: {
       submit() {
+        // this.task.title.trim()
         this.$store.dispatch("POST_LIST", {
             title: this.title
           })

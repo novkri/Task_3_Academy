@@ -1,23 +1,14 @@
 <template>
   <v-form @submit.prevent="submit()">
-    <!-- внешний вид -->
-      <!-- <v-row justify="space-between">
-        <v-col lg="7" > -->
-          <v-text-field v-model="title" solo label="Добавить новую подзадачу" append-icon="add" placeholder="Название">
-          </v-text-field>
-        <!-- </v-col>
 
-        <v-col lg="3" align-self="center"> -->
-          <v-btn :disabled="!title" color="success" class="mr-4" @click="submit">
-            Добавить
-          </v-btn>
-        <!-- </v-col>
+    <v-text-field v-model="title" solo label="Добавить новую подзадачу" append-icon="add" placeholder="Название">
+    </v-text-field>
 
-        <v-col lg="2" align-self="center"> -->
-          <v-checkbox v-model="isUrgent" color="red" label="Срочно"></v-checkbox>
-        <!-- </v-col>
+    <v-btn :disabled="!title" color="success" class="mr-4" @click="submit">
+      Добавить
+    </v-btn>
 
-      </v-row> -->
+    <v-checkbox v-model="isUrgent" color="red" label="Срочно"></v-checkbox>
   </v-form>
 </template>
 
@@ -29,13 +20,25 @@
       isUrgent: false
 
     }),
+    //   computed: {
+    //     canCreate() {
+    //       return this.task.title.trim()
+    //     }
+    // },
     methods: {
       submit() {
         this.$store.dispatch("POST_TASK", {
             listid: this.$route.params.id,
             title: this.title,
             isComplete: false,
-            isUrgent: this.isUrgent
+            isUrgent: this.isUrgent,
+            date: new Date().toLocaleString([], {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
           })
           .then(response => {
             // + окошко с вопросом 
@@ -46,7 +49,7 @@
           })
           .catch(error => console.log(error))
       },
-      
+
     }
   }
 </script>
