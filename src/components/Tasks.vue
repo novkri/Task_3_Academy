@@ -1,28 +1,29 @@
 <template>
   <div>
     <v-card style="height: 100%; overflow: hidden;">
-      <!-- список -->
+      <!-- list of tasks -->
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
         <v-list-item @click.prevent="toggle(task.id)">
           <v-checkbox v-model="task.isComplete" color="success"></v-checkbox>
 
           <v-list-item-content>
-            <!-- добавить зачеркивание -->
+            <!-- добавить зачеркивание here when checked? -->
             <v-list-item-title>{{ task.title }}</v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
-          <!-- срочное -->
+          <!-- checkbox -->
           <v-icon v-if="task.isUrgent" color="red">info</v-icon>
           <v-icon v-else></v-icon>
      
 
-          <!-- delete doesni work yet -->
+          <!-- delete works???? -->
           <v-list-item-action>
             <v-btn @click.prevent="deleteTask(task.id)" icon>
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-item-action>
+
         </v-list-item>
       </v-list>
 
@@ -63,28 +64,14 @@
     },
     methods: {
       toggle(index) {
-
         console.log(index)
-
-      },
-      openModal() {
-        this.$router.push({
-          // name: '',
-          // params: {
-          //   taskId: this.task.id
-          // }
-        })
       },
 
       async deleteTask(index) {
         console.log("index", index);
-        await this.$store.dispatch("DELETE_TASK", {
-          listid: this.$route.params.id,
-          index
-        }).then(response => {
-            // + окошко с вопросом 
-
-            // + перенаправлнеи на lists/
+        await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
+          .then(response => {
+            // + перенаправлнеи на lists/ ?
             // this.$router.push({
             //   name: 'task',
             //   params: {taskId: this.$route.params.id}

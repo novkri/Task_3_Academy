@@ -18,21 +18,18 @@
     }),
     methods: {
       submit() {
-        // this.task.title.trim()
-        this.$store.dispatch("POST_LIST", {
-            title: this.title
-          })
+        // this.task.title.trim() mb?
+        this.$store.dispatch("POST_LIST", { title: this.title})
           .then(response => {
-            // + окошко с вопросом ?
-            console.log(response);
             this.title = ''
+
             this.$router.push({
               name: 'tasks',
               params: {
                 id: response.data.id
               }
-
             })
+            
             this.$store.commit("SET_NEW_LIST_FORM", false)
           })
       },

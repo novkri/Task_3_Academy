@@ -41,11 +41,9 @@
             })
           })
           .then(response => {
-            // + окошко с вопросом 
             console.log(response, "submit done");
             this.title = ''
             this.isUrgent = false
-
           })
           .catch(error => console.log(error))
       },
