@@ -33,7 +33,7 @@
       <v-list-item v-for="(list, i) in LISTS" :key="i" @click.prevent="toggle(list.id)">
         
         <v-list-item-action>
-          <v-btn icon @click.stop="openModal(list.title)"><v-icon>delete</v-icon></v-btn>
+          <v-btn icon @click.stop="openModal(list.title, list.id)"><v-icon>delete</v-icon></v-btn>
         </v-list-item-action>
 
         <v-list-item-content>
@@ -66,7 +66,7 @@
 
     
   </v-navigation-drawer>
-  <Popup v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title" @deleteList="deleteList(index)"/>
+  <Popup v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title" :listId="paramsModal.listId" @deleteList="deleteList(paramsModal.listId)"/>
   <!-- deletelist ??? -->
 </div>
   
@@ -88,7 +88,8 @@
     data: () => ({
       paramsModal: {
         open: false,
-        title: ''
+        title: '',
+        listId: undefined
       },
       items: [{
           action: "sort",
@@ -144,12 +145,11 @@
       closePopup () {
         this.paramsModal.open = false
       },
-      openModal(title) {
+      openModal(title, id) {
         this.paramsModal.title = title
+        this.paramsModal.listId = id
         console.log(this.paramsModal);
         this.paramsModal.open = true
-
-        console.log(this.paramsModal.title,this.paramsModal.open);
       },
 
 
@@ -178,6 +178,7 @@
       },
 
       async deleteList(index) {
+        console.log(index);
         await this.$store.dispatch("DELETE_LIST", index).then(response => {
             // + окошко с вопросом 
 

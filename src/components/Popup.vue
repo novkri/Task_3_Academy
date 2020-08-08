@@ -4,7 +4,7 @@
       <v-dialog v-model="paramsModal">
         <!--  -->
         <v-card>
-          <v-card-title>{{paramsModal}}// Title: {{val}}</v-card-title>
+          <v-card-title>{{paramsModal}}// Title: {{val}} + id {{listId}}</v-card-title>
 
           <v-card-text>
             <v-container>
@@ -22,7 +22,7 @@
 <script>
 export default {
   name: 'popup',
-  props: ['val'],
+  props: ['val', 'listId'],
   // props: {
   //   open: Boolean,
   //   title: String
@@ -30,7 +30,7 @@ export default {
   data: () => ({
     paramsModal: {
       open: true,
-      title: '' // probably dont nned it anymore
+      // title: '' // probably dont nned it anymore
     }
   }),
   methods: {
@@ -39,11 +39,12 @@ export default {
     },
 
 
-    
-    deleteList() {
+
+    async deleteList(listId) {
       // here get id AND ttile and return id to Parent
-      this.$emit('deleteList')
+      await this.$emit('deleteList', listId)
       console.log("submitDelete заглушка");
+      this.$emit('closePopup')
     }
   }
 }
