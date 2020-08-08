@@ -5,25 +5,86 @@
         <v-toolbar-title>Задачи</v-toolbar-title>
       </v-toolbar>
 
-      <!-- фильтры и сортировка -->
+
+<!--  items: [{
+          action: "sort",
+          title: "Сортировать по",
+          active: false,
+          items: [{
+            title: "имени",
+            by: "name"
+          }, ]
+        },
+        {
+          action: "filter_list",
+          title: "Фильтровать по",
+          active: false,
+          items: [{
+              title: "Незваершенные",
+              by: "remaining"
+            },
+            {
+              title: "Звершенные",
+              by: "completed"
+            },
+            {
+              title: "Все",
+              by: "all"
+            }
+          ]
+        }
+      ] -->
+      <!-- сортировка -->
       <v-list dense>
-        <v-list-group v-model="item.active" v-for="(item, i) in items" :key="i" no-action>
+        <v-list-group no-action>
           <v-list-item slot="activator">
+
             <v-list-item-icon>
-              <v-icon v-text="item.action"></v-icon>
+              <v-icon>sort</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
+              <v-list-item-title >Сортировать по</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item @click="sortBy('title')">
+            <!-- v-for="(subitem, i) in item.items" :key="i" active-class
+            v-on="item.action === 'sort' ? { click: () => sort(subitem.by) } : { click: () => filter(subitem.by)}" -->
+            <v-list-item-content>
+              <v-list-item-title>Имени</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+
+        <!-- фильтры -->
+        <v-list-group no-action>
+          <v-list-item slot="activator">
+          <v-list-item-icon>
+              <v-icon>filter_list</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title >Фильтровать по</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <!-- v-for="(subitem, i) in item.items" :key="i" active-class
+            v-on="item.action === 'sort' ? { click: () => sort(subitem.by) } : { click: () => filter(subitem.by)}" -->
+            <v-list-item-content>
+              <v-list-item-title>Все</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+
+            <v-list-item-content>
+              <v-list-item-title>Завершенные</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+
+            <v-list-item-content>
+              <v-list-item-title>Незавершенные</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
-          <!-- опции для фильтра и сортировки -->
-          <v-list-item v-for="(subitem, i) in item.items" :key="i" active-class
-            v-on="item.action === 'sort' ? { click: () => sort(subitem.by) } : { click: () => filter(subitem.by)}">
-            <v-list-item-content>
-              <v-list-item-title>{{ subitem.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
         </v-list-group>
       </v-list>
 
@@ -50,7 +111,7 @@
       <v-list>
         <v-list-item @click.prevent="openNewListForm()" v-if="!isOpen">
           <v-list-item-content>
-            <v-list-item-title>Добавить задачу</v-list-item-title>
+            <v-list-item-title>Добавить задачу (click here)</v-list-item-title>
           </v-list-item-content>
 
           <v-list-item-action>
@@ -170,12 +231,12 @@
       openNewListForm() {
         this.$store.commit("SET_NEW_LIST_FORM", true)
       },
-      sort(value) {
-        console.log(value)
-      },
-      filter(value) {
-        console.log(value)
-      },
+      // sort(value) {
+      //   console.log(value)
+      // },
+      // filter(value) {
+      //   console.log(value)
+      // },
 
       async deleteList(index) {
         await this.$store.dispatch("DELETE_LIST", index)
@@ -187,6 +248,15 @@
               console.log(response, "DELETE_LIST done");
             })
           .catch(error => console.log(error))
+      },
+
+      sortBy(val) {
+        console.log('clicked');
+        
+        // let listId = this.$route.params.id
+        // console.log(listId);
+        // this.LISTS.sort((a, b) => a[prop] < b[prop] ? -1 : 1)
+        this.$store.dispatch("SORT_BY", { val });
       }
     }
   }

@@ -17,12 +17,19 @@
           <v-icon v-else></v-icon>
      
 
-          <!-- delete works???? -->
+          <!-- delete -->
           <v-list-item-action>
-            <v-btn @click.prevent="deleteTask(task.id)" icon>
+            <v-btn icon @click.stop="openModal(task.title, task.id)">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-item-action>
+
+
+          <!-- <v-list-item-action>
+            <v-btn @click.prevent="deleteTask(task.id)" icon>
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-list-item-action> -->
 
         </v-list-item>
       </v-list>
@@ -38,12 +45,17 @@
         </v-row>
       </v-card-actions>
     </v-card>
+
+    <Popup v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
+      :listId="paramsModal.taskId" @deleteList="deleteTask(paramsModal.taskId)" />
+
     <router-view :key="$route.fullPath"></router-view>
   </div>
 </template>
 
 <script>
   import NewTask from './NewTask'
+  import Popup from './Popup'
   import {mapGetters} from 'vuex'
 
   export default {
@@ -52,9 +64,15 @@
       listId: Number
     },
     components: {
-      NewTask
+      NewTask,
+      Popup
     },
     data: () => ({
+      paramsModal: {
+        open: false,
+        title: '',
+        taskId: undefined
+      }
     }),
     computed: {
       ...mapGetters(['TASKS'])
@@ -66,6 +84,19 @@
       toggle(index) {
         console.log(index)
       },
+
+      // for popup
+      closePopup() {
+        this.paramsModal.open = false
+      },
+      openModal(title, id) {
+        this.paramsModal.title = title //сюда записался listId
+        this.paramsModal.listId = id // сюда записался taskid
+        // еще передавать title
+        console.log("openModal", this.paramsModal);
+        this.paramsModal.open = true
+      },
+
 
       async deleteTask(index) {
         console.log("index", index);

@@ -14,7 +14,11 @@ export default new Vuex.Store({
     lists: [],
 
     //подзадачи
-    tasks: []
+    tasks: [],
+
+    //фильтры
+    sortBy: '',
+    filterBy: ''
   },
   getters: {
     // форма для новой задачи
@@ -30,8 +34,7 @@ export default new Vuex.Store({
     // подзадачи
     TASKS: state => {
       return state.tasks
-    }
-
+    },
   },
   mutations: {
     // форма для новой задачи
@@ -52,7 +55,6 @@ export default new Vuex.Store({
       state.lists = state.lists.filter(list => list.id !== payload)
     },
 
-
     // подзадачи
     SET_TASKS: (state, {data}) => {
       state.tasks = data
@@ -66,6 +68,19 @@ export default new Vuex.Store({
     REMOVE_TASK: (state, payload) => {
       console.log("REMOVE_TASK", payload);
       state.tasks = state.tasks.filter(task => task.id !== payload)
+    },
+
+
+
+    //сортировка
+    SET_LIST_SORT: (state, {val}) => {
+      state.lists.sortValue = val
+      console.log(state.lists);
+    },
+    SORT_LIST_BY: (state, {val}) => {
+
+      state.lists.sort((a, b) => a[val] < b[val] ? -1 : 1)
+      console.log(state.lists);
     },
 
 
@@ -137,6 +152,19 @@ export default new Vuex.Store({
             reject(error)
           })
       })
+    },
+
+    //фильтры
+    SORT_BY: ({ commit }, {val}) => {
+      axios.get(`http://localhost:3000/lists`, {
+        sortBy: val
+      })
+      .then(response => {
+        console.log("SORT_BY",response);
+        commit("SET_LIST_SORT", {val})
+        commit("SORT_LIST_BY", {val})
+      })
+      .catch(error => console.log(error))
     }
   }
 })

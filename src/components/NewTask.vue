@@ -29,7 +29,7 @@
       submit() {
         this.$store.dispatch("POST_TASK", {
             listid: this.$route.params.id,
-            title: this.title,
+            title: this.title.trim(),
             isComplete: false,
             isUrgent: this.isUrgent,
             date: new Date().toLocaleString([], {
