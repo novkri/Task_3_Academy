@@ -1,17 +1,17 @@
 <template>
   <v-container>
     <v-row>
-      <v-dialog v-model="open">
+      <v-dialog v-model="paramsModal">
         <!--  -->
         <v-card>
-          <v-card-title>some title</v-card-title>
+          <v-card-title>{{paramsModal}}// Title: {{val}}</v-card-title>
 
           <v-card-text>
             <v-container>
-              sdlfjsdlkf
+              Удалить дело "{{val}}"?
             </v-container>
-              <v-btn>da</v-btn>
-              <v-btn @click="closePopup">net</v-btn>
+              <v-btn color="red" dark @click="deleteList">da</v-btn>
+              <v-btn @click="closePopup" color="success" dark>net</v-btn>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -22,15 +22,28 @@
 <script>
 export default {
   name: 'popup',
+  props: ['val'],
+  // props: {
+  //   open: Boolean,
+  //   title: String
+  // },
   data: () => ({
-    open: true
+    paramsModal: {
+      open: true,
+      title: '' // probably dont nned it anymore
+    }
   }),
   methods: {
     closePopup() {
-       this.$emit('closePopup')
-      // console.log( this.open);
-      // this.open = false
-      // console.log( this.open);
+      this.$emit('closePopup')
+    },
+
+
+    
+    deleteList() {
+      // here get id AND ttile and return id to Parent
+      this.$emit('deleteList')
+      console.log("submitDelete заглушка");
     }
   }
 }

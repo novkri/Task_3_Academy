@@ -33,7 +33,7 @@
       <v-list-item v-for="(list, i) in LISTS" :key="i" @click.prevent="toggle(list.id)">
         
         <v-list-item-action>
-          <v-btn icon @click.stop="openModal()"><v-icon>delete</v-icon></v-btn>
+          <v-btn icon @click.stop="openModal(list.title)"><v-icon>delete</v-icon></v-btn>
         </v-list-item-action>
 
         <v-list-item-content>
@@ -66,7 +66,8 @@
 
     
   </v-navigation-drawer>
-  <Popup v-if="open" @closePopup="closePopup"/>
+  <Popup v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title" @deleteList="deleteList(index)"/>
+  <!-- deletelist ??? -->
 </div>
   
 </template>
@@ -85,8 +86,10 @@
       Popup
     },
     data: () => ({
-      open: false,
-      dialog: false,
+      paramsModal: {
+        open: false,
+        title: ''
+      },
       items: [{
           action: "sort",
           title: "Сортировать по",
@@ -139,16 +142,18 @@
     },
     methods: {
       closePopup () {
-        console.log("this.open close", this.open);
-        this.open = false
-        console.log("this.open close", this.open);
+        this.paramsModal.open = false
       },
-      openModal() {
-        console.log("openModal");
-        console.log("this.ope2n", this.open);
-        this.open = true
-        console.log("this.open2", this.open);
+      openModal(title) {
+        this.paramsModal.title = title
+        console.log(this.paramsModal);
+        this.paramsModal.open = true
+
+        console.log(this.paramsModal.title,this.paramsModal.open);
       },
+
+
+
       toggle(idx) {
         console.log(this.$route.params.id, idx);
         if (this.$route.params.id !== idx) {
