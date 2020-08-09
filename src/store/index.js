@@ -59,9 +59,17 @@ export default new Vuex.Store({
     SET_TASKS: (state, {data}) => {
       state.tasks = data
     },
+    // SET_TASKS: (state, { data, listId }) => {
+    //   Vue.set(
+    //     state.lists.find(list => list.id === listId),
+    //     "curatedTasks",
+    //     data
+    //   );
+    //   state.lists.find(list => list.id === listId).tasks = data;
 
-    ADD_TASK: (state, { data }) => {
-      console.log("ADD_TASK",data);
+    ADD_TASK: (state, { data, listId }) => {
+      console.log("ADD_TASK",data, listId);
+      // console.log(state.lists.find(list => list.id === 7).title);
       state.tasks.push(data)
     },
 
@@ -98,35 +106,32 @@ export default new Vuex.Store({
     //filter
     SET_LIST_FILTER: (state, {val}) => {
       state.lists.filterValue = val
-      console.log(state.lists);
+      console.log("SET_LIST_FILTER", state.lists, val,state.lists.filterValue = val );
     },
+
     FILTER_LIST_BY: (state, {filter_query}) => {
-      //!!!!!!!
-      let tasks = state.tasks.find(list => list.isComplete === true)
+      let tasks = state.tasks
+      let arr = []
 
-      // let arrTasks = Array.from(tasks)
-      console.log("tasks", tasks);
-      // let arr = []
-      console.log(filter_query);
-      
-      // switch (filter_query) {
-      //   case "remaining":
-      //     arr = tasks.filter(task => {
-      //       return !task.isComplete
-      //     })
-      //     break
+      switch (filter_query) {
+        case "remaining":
+          arr = tasks.filter(task => {
+            return !task.isComplete
+          })
+          break
 
-      //     case "completed":
-      //     arr = tasks.filter(task => {
-      //       return task.isComplete
-      //     })
-      //     break
+          case "completed":
+          arr = tasks.filter(task => {
+            return task.isComplete
+          })
+          console.log(arr);
+          break
 
-      //     case "all":
-      //     arr = tasks
-      //     break
-      // }
-      // state.lists.find(list => list.id === 2).tasks = [...arr]
+          case "all":
+          arr = tasks
+          break
+      }
+      state.tasks = [...arr]
     },
 
 
@@ -202,7 +207,7 @@ export default new Vuex.Store({
 
     TOGGLE_TASK: async ({ commit }, { taskId, isComplete, listId }) => {
       console.log( taskId, isComplete, listId);
-      let { data } = await axios.patch(`http://localhost:3000/tasks/${taskId}`, {isComplete: true})
+      let { data } = await axios.patch(`http://localhost:3000/tasks/${taskId}`, {isComplete})
       console.log("TOGGLE_TASK", data);
       commit("SET_TASK_STATUS", {
         data,
@@ -234,7 +239,8 @@ export default new Vuex.Store({
         filterBy: val
       })
       .then(response => {
-        console.log("FILTER_BY",response);
+        console.log(response);
+
         commit("SET_LIST_FILTER", {val})
         commit("FILTER_LIST_BY", {filter_query: val})
       })

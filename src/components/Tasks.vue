@@ -3,8 +3,8 @@
     <v-card style="height: 100%; overflow: hidden;">
       <!-- list of tasks -->
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
-        <v-list-item @click.prevent="toggle(task.id)">
-          <v-checkbox v-model="task.isComplete" color="success"></v-checkbox>
+        <v-list-item>
+          <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(task.id,task.isComplete)"></v-checkbox>
 
           <v-list-item-content>
             <!-- добавить зачеркивание here when checked? -->
@@ -23,14 +23,7 @@
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-item-action>
-
-
-          <!-- <v-list-item-action>
-            <v-btn @click.prevent="deleteTask(task.id)" icon>
-              <v-icon>delete</v-icon>
-            </v-btn>
-          </v-list-item-action> -->
-
+          
         </v-list-item>
       </v-list>
 
@@ -56,23 +49,31 @@
 <script>
   import NewTask from './NewTask'
   import Popup from './Popup'
+  // import PopupAdd from './Popups/PopupAdd'
   import {mapGetters} from 'vuex'
 
   export default {
     name: 'tasks',
     props: {
-      listId: Number
+      listId: Number,
+      // listTitle: String
     },
     components: {
       NewTask,
-      Popup
+      Popup,
+      // PopupAdd
     },
     data: () => ({
       paramsModal: {
         open: false,
         title: '',
         taskId: undefined
-      }
+      },
+      // paramsAddModal: {
+      //   open: false,
+      //   titleTask: '',
+      //   titleList: ''
+      // }
     }),
     computed: {
       ...mapGetters(['TASKS'])
@@ -81,11 +82,12 @@
       await this.$store.dispatch("GET_TASKS", this.$route.params.id)
     },
     methods: {
-      toggle(index) {
-        console.log(index)
+      toggle(index, complete) {
+
+        console.log(index, complete)
         this.$store.dispatch("TOGGLE_TASK", {
         taskId: index,
-        isComplete: true,
+        isComplete: complete,
         listId: this.$route.params.id
       });
   
@@ -99,14 +101,23 @@
       },
       openModal(title, id) {
         this.paramsModal.title = title //сюда записался listId
-        this.paramsModal.listId = id // сюда записался taskid
+        this.paramsModal.listId = this.$route.params.id // сюда записался taskid
+        this.paramsModal.taskId = id 
         // еще передавать title
         console.log("openModal", this.paramsModal);
         this.paramsModal.open = true
       },
+      // openAddModal(title, id) {
+      //   this.paramsAddModal.titleTask = title //сюда записался listId
+      //   this.paramsAddModal.titleList = this.$route.params.id // сюда записался taskid
+      //   // еще передавать title
+      //   console.log("paramsAddModal", this.paramsAddModal, id);
+      //   this.paramsAddModal.open = true
+      // },
 
 
       async deleteTask(index) {
+        console.log(index);
         await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
           .then(response => {
             // + перенаправлнеи на lists/ ?

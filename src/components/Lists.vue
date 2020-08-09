@@ -92,7 +92,7 @@
 
       <!-- список задач -->
       <v-list>
-        <v-list-item v-for="(list, i) in LISTS" :key="i" @click.prevent="toggle(list.id)">
+        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(list.id)">
           <v-list-item-action>
             <v-btn icon @click.stop="openModal(list.title, list.id)">
               <v-icon>delete</v-icon>
@@ -231,12 +231,6 @@
       openNewListForm() {
         this.$store.commit("SET_NEW_LIST_FORM", true)
       },
-      // sort(value) {
-      //   console.log(value)
-      // },
-      // filter(value) {
-      //   console.log(value)
-      // },
 
       async deleteList(index) {
         await this.$store.dispatch("DELETE_LIST", index)
@@ -254,7 +248,6 @@
         this.$store.dispatch("SORT_BY", { val });
       },
       filterBy(val) {
-        console.log('clicked')
         this.$store.dispatch("FILTER_BY", { val });
       }
     }
