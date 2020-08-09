@@ -65,21 +65,21 @@
               <v-list-item-title >Фильтровать по</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
+          <v-list-item @click="filterBy('all')">
             <!-- v-for="(subitem, i) in item.items" :key="i" active-class
             v-on="item.action === 'sort' ? { click: () => sort(subitem.by) } : { click: () => filter(subitem.by)}" -->
             <v-list-item-content>
               <v-list-item-title>Все</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
 
+          <v-list-item @click="filterBy('completed')">
             <v-list-item-content>
               <v-list-item-title>Завершенные</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
 
+          <v-list-item @click="filterBy('remaining')">
             <v-list-item-content>
               <v-list-item-title>Незавершенные</v-list-item-title>
             </v-list-item-content>
@@ -251,12 +251,11 @@
       },
 
       sortBy(val) {
-        console.log('clicked');
-        
-        // let listId = this.$route.params.id
-        // console.log(listId);
-        // this.LISTS.sort((a, b) => a[prop] < b[prop] ? -1 : 1)
         this.$store.dispatch("SORT_BY", { val });
+      },
+      filterBy(val) {
+        console.log('clicked')
+        this.$store.dispatch("FILTER_BY", { val });
       }
     }
   }

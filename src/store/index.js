@@ -71,6 +71,18 @@ export default new Vuex.Store({
     },
 
 
+    SET_TASK_STATUS: (state, payload) => {
+      console.log("SET_TASK_STATUS", payload, payload.isComplete)
+      state.tasks.find(task => task.id === payload.taskId).isComplete = payload.isComplete
+    //   // console.log(state.tasks.find(task => task.id === taskId));
+
+    //   // let data = 
+    //   state.tasks = state.tasks.find(task => task.id === payload.taskId)
+    //   // data = state.tasks
+    //   console.log("state.tasks", state.tasks);
+    //   // state.tasks.push(data)
+      
+    },
 
     //сортировка
     SET_LIST_SORT: (state, {val}) => {
@@ -78,9 +90,43 @@ export default new Vuex.Store({
       console.log(state.lists);
     },
     SORT_LIST_BY: (state, {val}) => {
-
       state.lists.sort((a, b) => a[val] < b[val] ? -1 : 1)
       console.log(state.lists);
+    },
+
+
+    //filter
+    SET_LIST_FILTER: (state, {val}) => {
+      state.lists.filterValue = val
+      console.log(state.lists);
+    },
+    FILTER_LIST_BY: (state, {filter_query}) => {
+      //!!!!!!!
+      let tasks = state.tasks.find(list => list.isComplete === true)
+
+      // let arrTasks = Array.from(tasks)
+      console.log("tasks", tasks);
+      // let arr = []
+      console.log(filter_query);
+      
+      // switch (filter_query) {
+      //   case "remaining":
+      //     arr = tasks.filter(task => {
+      //       return !task.isComplete
+      //     })
+      //     break
+
+      //     case "completed":
+      //     arr = tasks.filter(task => {
+      //       return task.isComplete
+      //     })
+      //     break
+
+      //     case "all":
+      //     arr = tasks
+      //     break
+      // }
+      // state.lists.find(list => list.id === 2).tasks = [...arr]
     },
 
 
@@ -154,6 +200,20 @@ export default new Vuex.Store({
       })
     },
 
+    TOGGLE_TASK: async ({ commit }, { taskId, isComplete, listId }) => {
+      console.log( taskId, isComplete, listId);
+      let { data } = await axios.patch(`http://localhost:3000/tasks/${taskId}`, {isComplete: true})
+      console.log("TOGGLE_TASK", data);
+      commit("SET_TASK_STATUS", {
+        data,
+        taskId,
+        isComplete,
+        listId
+      });
+    },
+
+    
+
     //фильтры
     SORT_BY: ({ commit }, {val}) => {
       axios.get(`http://localhost:3000/lists`, {
@@ -165,6 +225,20 @@ export default new Vuex.Store({
         commit("SORT_LIST_BY", {val})
       })
       .catch(error => console.log(error))
-    }
+    },
+
+
+
+    FILTER_BY: ({ commit }, {val}) => {
+      axios.get(`http://localhost:3000/lists`, {
+        filterBy: val
+      })
+      .then(response => {
+        console.log("FILTER_BY",response);
+        commit("SET_LIST_FILTER", {val})
+        commit("FILTER_LIST_BY", {filter_query: val})
+      })
+      .catch(error => console.log(error))
+    },
   }
 })

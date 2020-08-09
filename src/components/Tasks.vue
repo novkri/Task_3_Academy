@@ -83,8 +83,16 @@
     methods: {
       toggle(index) {
         console.log(index)
+        this.$store.dispatch("TOGGLE_TASK", {
+        taskId: index,
+        isComplete: true,
+        listId: this.$route.params.id
+      });
+  
       },
-
+      //  completed() {
+      //   // this.$store.commit("SET_TASKS")
+      // },
       // for popup
       closePopup() {
         this.paramsModal.open = false
@@ -99,7 +107,6 @@
 
 
       async deleteTask(index) {
-        console.log("index", index);
         await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
           .then(response => {
             // + перенаправлнеи на lists/ ?
