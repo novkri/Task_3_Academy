@@ -39,7 +39,7 @@
       </v-card-actions>
     </v-card>
 
-    <Popup v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
+    <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.taskId" @deleteList="deleteTask(paramsModal.taskId)" />
 
     <router-view :key="$route.fullPath"></router-view>
@@ -48,20 +48,17 @@
 
 <script>
   import NewTask from './NewTask'
-  import Popup from './Popup'
-  // import PopupAdd from './Popups/PopupAdd'
+  import PopupDelete from './Popups/PopupDelete'
   import {mapGetters} from 'vuex'
 
   export default {
     name: 'tasks',
     props: {
       listId: Number,
-      // listTitle: String
     },
     components: {
       NewTask,
-      Popup,
-      // PopupAdd
+      PopupDelete,
     },
     data: () => ({
       paramsModal: {
