@@ -45,6 +45,7 @@ const routes = [
     routes,
     base: '/'
   })
+  
   router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     const isAuthed = firebase.auth().currentUser

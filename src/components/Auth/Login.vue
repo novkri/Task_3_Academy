@@ -1,47 +1,45 @@
 <template>
-  <div>
-    <!-- class="grey darken-1  -->
-    <!-- задать размеры формы не на весь экран -->
-<!-- v-model="valid" -->
-    <v-form  @submit.prevent="submitHandler">
-      <v-container>
-        <v-row>
-          <v-col cols="12" md="4">
-<!--:rules="emailRules"  -->
-            <v-text-field v-model="email" label="E-mail" required></v-text-field>
+    <v-card class="mx-auto mt-6" style="max-width: 500px;">
+      <v-toolbar color="grey darken-3" cards dark flat>
+        <v-card-title>Логин</v-card-title>
+      </v-toolbar>
 
-            <!-- :rules="passwordRules" :counter="10"  -->
-            <v-text-field  v-model="password" label="password" required>
-            </v-text-field>
+      <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
+        <v-text-field v-model="email" :rules="[rules.email, rules.required]" filled label="Email"
+          type="email"></v-text-field>
 
-<!-- :disabled="!valid"  @click="login"-->
-            <v-btn  color="success" class="mr-4" type="submit">
-              login <v-icon>send</v-icon>
-            </v-btn>
-
-            <p class="center">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></p>
-            <!-- + here link to registration -->
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
+        <!-- type="password" -->
+        <v-text-field v-model="password" :rules="[rules.required, rules.length(6)]" filled
+          min="6" label="Пароль" type="text"></v-text-field>
+      </v-form>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn :disabled="!form" class="success" depressed @click="submitHandler">Войти
+        </v-btn>
+      </v-card-actions>
+    </v-card>
 
 
-  </div>
 </template>
 
 <script>
-import firebase from 'firebase/app'
+  import firebase from 'firebase/app'
 
   export default {
     name: 'login',
     data: () => ({
+      form: false,
       email: '',
-      password: ''
+      password: '',
+      rules: {
+        email: v => !!(v || '').match(/@/) || 'Некорректный email',
+        length: len => v => (v || '').length >= len || `Пароль должен быть больше ${len} сииволов`,
+        password: v => !!v || 'Пароль не может быть пустым',
+        required: v => !!v || 'Это поле не может быть пустым',
+      },
     }),
     methods: {
       async submitHandler() {
-        // валидации пока нет
         if (this.email && this.password) {
           const formData = {
             email: this.email,
@@ -52,13 +50,13 @@ import firebase from 'firebase/app'
           try {
             console.log("logged")
             await firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
-            // await this.$store.dispatch('login', formData)
             this.$router.push('/')
           } catch (e) {
             console.log(e)
           }
         }
-      }
+      },
+
     }
   }
 </script>

@@ -3,7 +3,8 @@
   <v-app-bar color="grey darken-4" dark dense flat>
     <v-toolbar-title>Page title</v-toolbar-title>
     <v-spacer></v-spacer>
-
+    {{ emailLogged }} (should be a usernname here)
+     <v-spacer></v-spacer>
     <v-btn @click="signOut">Выйти</v-btn>
   </v-app-bar>
 
@@ -30,21 +31,25 @@ import firebase from 'firebase/app'
     name: "todo",
     data: () => ({
       loggedIn: false,
-      isVisible: false
+      isVisible: false,
+      emailLogged: ''
     }),
     components: {
       Lists,
     },
-    // created() {
-    //   firebase.auth().onAuthStateChanged(user => {
-    //     this.loggedIn = !!user
-    //     if (user) {
-    //       this.loggedIn = true
-    //     } else {
-    //       this.loggedIn = false
-    //     }
-    //   })
-    // },
+    created() {
+      const userr = firebase.auth().currentUser
+      this.emailLogged = userr.email
+
+      firebase.auth().onAuthStateChanged(user => {
+        this.loggedIn = !!user
+        if (user) {
+          this.loggedIn = true
+        } else {
+          this.loggedIn = false
+        }
+      })
+    },
     methods: {
       async signOut() {
         try {
