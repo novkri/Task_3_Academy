@@ -13,6 +13,7 @@
 
               <!-- and style buttons and card itself !!! -->
               <v-btn color="red" dark @click="deleteList">da</v-btn>
+              <v-spacer></v-spacer>
               <v-btn @click="closePopup" color="success" dark>net</v-btn>
 
           </v-card-text>

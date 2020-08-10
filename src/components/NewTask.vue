@@ -1,21 +1,29 @@
 <template>
-<div>
-   <v-form @submit.prevent="submit(title)">
+  <div>
+    <v-form @submit.prevent="submit(title)">
+      <v-container>
+        <v-row>
+          <v-col cols="12" lg="7">
+            <v-text-field v-model="title" solo label="Добавить новую подзадачу" append-icon="add" placeholder="Название">
+            </v-text-field>
+          </v-col>
 
-    <v-text-field v-model="title" solo label="Добавить новую подзадачу" append-icon="add" placeholder="Название">
-    </v-text-field>
+          <v-col cols="12" lg="3">
+            <v-btn :disabled="!title" color="success" class="mr-4" @click="submit(title)">
+              <v-icon>add</v-icon> Добавить
+            </v-btn>
+          </v-col>
 
-    <v-btn :disabled="!title" color="success" class="mr-4" @click="submit(title)">
-      Добавить
-    </v-btn>
+          <v-col cols="12" lg="2">
+            <v-checkbox v-model="isUrgent" color="red" label="Срочно"></v-checkbox>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
 
-    <v-checkbox v-model="isUrgent" color="red" label="Срочно"></v-checkbox>
-    
-  </v-form>
-  <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
-</div>
- 
-  
+    <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
+
+  </div>
 </template>
 
 <script>

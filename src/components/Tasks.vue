@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card style="height: 100%; overflow: hidden;">
-      <!-- list of tasks -->
+
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
         <v-list-item>
           <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(task.id,task.isComplete)"></v-checkbox>
@@ -12,12 +12,10 @@
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
-          <!-- checkbox -->
           <v-icon v-if="task.isUrgent" color="red">info</v-icon>
           <v-icon v-else></v-icon>
      
 
-          <!-- delete -->
           <v-list-item-action>
             <v-btn icon @click.stop="openModal(task.title, task.id)">
               <v-icon>delete</v-icon>
@@ -29,7 +27,6 @@
 
       <v-divider></v-divider>
 
-      <!-- добавить новую подзадачу -->
       <v-card-actions>
         <v-row>
           <v-col>
@@ -104,14 +101,6 @@
         console.log("openModal", this.paramsModal);
         this.paramsModal.open = true
       },
-      // openAddModal(title, id) {
-      //   this.paramsAddModal.titleTask = title //сюда записался listId
-      //   this.paramsAddModal.titleList = this.$route.params.id // сюда записался taskid
-      //   // еще передавать title
-      //   console.log("paramsAddModal", this.paramsAddModal, id);
-      //   this.paramsAddModal.open = true
-      // },
-
 
       async deleteTask(index) {
         console.log(index);
