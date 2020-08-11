@@ -108,6 +108,7 @@
       PopupDelete
     },
     data: () => ({
+      // listsF: [],
       paramsModal: {
         open: false,
         title: '',

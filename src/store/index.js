@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import auth from './auth'
 import data from './data'
+import info from './info'
 
 // import axios from 'axios'
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
   },
   modules: {
     auth,
-    data
+    data,
+    info
   }
 })

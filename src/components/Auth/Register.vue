@@ -1,51 +1,52 @@
 <template>
-  <div>
-      <!-- <div v-if="error" class="error">{{error.message}}</div> -->
-    <!-- class="grey darken-1  -->
-    <!-- задать размеры формы не на весь экран -->
-<!-- v-model="valid" -->
-    <v-form  @submit.prevent="submitHandler">
-      <v-container>
-        <v-row>
-          <v-col cols="12" md="4">
-<!--:rules="emailRules"  -->
-            <v-text-field v-model="username" label="Username" required></v-text-field>
+    <v-card class="mx-auto mt-6" style="max-width: 500px;">
+      <v-toolbar color="grey darken-3" cards dark flat>
+        <v-card-title>Логин</v-card-title>
+      </v-toolbar>
 
-            <v-text-field v-model="email" label="Email" required></v-text-field>
+      <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
+        <v-text-field v-model="username" label="Username" :rules="[rules.required]" filled></v-text-field>
 
-            <!-- :rules="passwordRules" :counter="10"  -->
-            <v-text-field  v-model="password" label="password" required>
-            </v-text-field>
+        <v-text-field v-model="email" :rules="[rules.email, rules.required]" filled label="Email"
+          type="email"></v-text-field>
 
-<!-- :disabled="!valid"  @click="login"-->
-            <v-btn  color="success" class="mr-4" type="submit">
-              register <v-icon>send</v-icon>
-            </v-btn>
-
-            <p class="center">Уже есть аккаунт? <router-link to="/login">Войти</router-link></p>
-            <!-- + here link to registration -->
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
-
-
-  </div>
+        <!-- type="password" -->
+        <v-text-field v-model="password" :rules="[rules.required, rules.length(6)]" filled
+          min="6" label="Пароль" type="text"></v-text-field>
+      </v-form>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn :disabled="!form" class="success" depressed @click="submitHandler">Войти
+        </v-btn>
+        <v-spacer></v-spacer>
+        <div class="text--primary">Есть аккаунт? <router-link to="/login">Зарегистрироваться</router-link></div>
+      </v-card-actions>
+    </v-card>
 </template>
 
 <script>
-// import firebase from 'firebase/app'
+  // import firebase from 'firebase/app'
+
   export default {
     name: 'register',
     data: () => ({
+      form: false,
       email: '',
       password: '',
       username: '',
-      error: ''
+      error: '',
+
+      //!!!!
+      rules: {
+        email: v => !!(v || '').match(/@/) || 'Некорректный email',
+        length: len => v => (v || '').length >= len || `Пароль должен быть больше ${len} сииволов`,
+        password: v => !!v || 'Пароль не может быть пустым',
+        required: v => !!v || 'Это поле не может быть пустым',
+      },
     }),
+
     methods: {
       async submitHandler() {
-        // валидации пока нет
         if (this.email && this.password) {
           const formData = {
             email: this.email,
@@ -53,18 +54,13 @@
             username: this.username
           }
 
-          console.log(formData);
           await this.$store.dispatch('REGISTER', formData)
-
-          // try {
-          //   await firebase.auth().createUserWithEmailAndPassword(formData.email, formData.password)
-
-            this.$router.push('/login') // redirect to login?
-          // } catch (e) {
-          //   console.log(e)
-          // }
+          this.$router.push('/')
+          // where to redirect?
+          // this.$router.push('/login')
         }
-      }
+      },
+
     }
   }
 </script>

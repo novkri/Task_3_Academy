@@ -16,10 +16,10 @@
       <v-card-actions>
         <v-btn :disabled="!form" class="success" depressed @click="submitHandler">Войти
         </v-btn>
+        <v-spacer></v-spacer>
+        <div class="text--primary">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></div>
       </v-card-actions>
     </v-card>
-
-
 </template>
 
 <script>
@@ -46,14 +46,15 @@
             password: this.password
           }
           console.log(formData);
-
           try {
-            console.log("logged")
             await firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
             this.$router.push('/')
-          } catch (e) {
-            console.log(e)
+          } catch (error) {
+            console.log(error);
           }
+          // await this.$store.dispatch('LOGIN', formData)
+          
+
         }
       },
 

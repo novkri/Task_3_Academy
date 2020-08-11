@@ -5,6 +5,7 @@
 
 // Vue.use(Vuex)
 import axios from 'axios'
+import firebase from 'firebase/app'
 
 export default {
   state: {
@@ -41,9 +42,10 @@ export default {
     SET_LISTS: (state, payload) => {
       state.lists = payload
     },
-    ADD_LIST: (state, payload) => {
-      state.lists.push(payload)
-    },
+    // ADD_LIST: (state, payload) => {
+    //   console.log(payload);
+    //   state.lists.push(payload)
+    // },
 
     REMOVE_LIST: (state, payload) => {
       console.log("REMOVE_LIST", payload);
@@ -133,22 +135,25 @@ export default {
   },
   actions: {
     // задачи
-    GET_LISTS: async ({ commit }) => {
-      let { data } = await axios.get('http://localhost:3000/lists')
-      commit("SET_LISTS", data)
+    GET_LISTS: async ({dispatch, commit}) => {
+      // let { data } = await axios.get('http://localhost:3000/lists')
+      const uid = await dispatch('GET_ID')
+      const info = (await firebase.database().ref(`/users/${uid}/info/lists`).once('value')).val()
+      console.log(Object.values(info));
+      commit("SET_LISTS", Object.values(info))
     },
-    POST_LIST: ({ commit }, payload) => {
-      console.log("POST_LIST", payload);
-      return new Promise((resolve, reject) => {
-        axios.post('http://localhost:3000/lists', payload).then(res => {
-            commit("ADD_LIST", res.data)
-            resolve(res)
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
+    async NEW_LIST_POST({dispatch}, {title}) {
+      try {
+          const uid = await dispatch('GET_ID')
+          const list = await firebase.database().ref(`/users/${uid}/info/lists`).push({title})
+          dispatch('GET_LISTS')
+          return {title, id: list.key}
+      } catch (e) {
+          console.log(e)
+          throw e
+      }
     },
+    
 
     DELETE_LIST: ({ commit }, payload) => {
       console.log(payload)

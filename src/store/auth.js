@@ -2,19 +2,21 @@ import firebase from 'firebase/app'
 
 export default {
     actions: {
-        // async LOGIN({email, password}) {
-        //     try {
-        //         await firebase.auth().signInWithEmailAndPassword(email, password)
-        //     } catch (error) {
-        //         console.log(e)
-        //         throw e
-        //     }
+        // async LOGIN(p) {
+        //     console.log("LOGIN");
+        //     console.log(p);
+        //     // try {
+        //     //     await firebase.auth().signInWithEmailAndPassword(email, password)
+        //     // } catch (error) {
+        //     //     console.log(error)
+        //     //     throw error
+        //     // }
         // },
-        // async LOGOUT() {
-        //     await firebase.auth().signOut()
-        // },
+        async LOGOUT({commit}) {
+            await firebase.auth().signOut()
+            commit('CLEAR_INFO')
+        },
         async REGISTER({dispatch}, {email, password, username}) {
-            console.log(email, password, username);
             try {
                 await firebase.auth().createUserWithEmailAndPassword(email, password)
                 const uid = await dispatch('GET_ID')
