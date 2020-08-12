@@ -16,7 +16,7 @@
 
         <v-col cols="12" lg="2">
           <!-- v-model="isUrgent" -->
-          <v-checkbox color="red" label="Срочно"></v-checkbox>
+          <!-- <v-checkbox color="red" label="Срочно"></v-checkbox> -->
         </v-col>
       </v-row>
     </v-container>

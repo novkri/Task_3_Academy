@@ -11,14 +11,14 @@
         <!-- type="password" -->
         <v-text-field v-model="password" :rules="[rules.required, rules.length(6)]" filled
           min="6" label="Пароль" type="text"></v-text-field>
-      </v-form>
+      
       <v-divider></v-divider>
-      <v-card-actions>
-        <v-btn :disabled="!form" class="success" depressed @click="submitHandler">Войти
+      <!-- <v-card-actions> -->
+        <v-btn :disabled="!form" class="success" depressed @click="submitHandler" type="submit">Войти
         </v-btn>
-        <v-spacer></v-spacer>
+        <!-- <v-spacer></v-spacer> -->
         <div class="text--primary">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></div>
-      </v-card-actions>
+      <!-- </v-card-actions> --></v-form>
     </v-card>
 </template>
 
@@ -47,14 +47,19 @@
           }
           console.log(formData);
           try {
+            console.log(this.$route.name);
             await firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
-            this.$router.push('/')
-          } catch (error) {
-            console.log(error);
-          }
-          // await this.$store.dispatch('LOGIN', formData)
-          
-
+            this.$router.push('/').catch(err => {
+                if (
+                  err.name !== 'NavigationDuplicated' &&
+                  !err.message.includes('Avoided redundant navigation to current location')
+                ) {
+                  console.error(err)
+                }
+              });
+            } catch (error) {
+              console.log(error);
+            }
         }
       },
 

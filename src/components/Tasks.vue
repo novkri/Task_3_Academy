@@ -2,18 +2,18 @@
   <div>
     <v-card style="height: 100%; overflow: hidden;">
 
-      <v-list two-line v-for="(task, index) in tasks" :key="index">
+      <v-list two-line v-for="(task, index) in TASKS" :key="index">
         <v-list-item>
           <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(task.id,task.isComplete)"></v-checkbox>
 
           <v-list-item-content>
             <!-- добавить зачеркивание here when checked? -->
             <v-list-item-title>{{ task.title }} taskid:{{index}} listid: {{task.listid}}</v-list-item-title>
-             <!-- <v-list-item-title>{{ task.date }}</v-list-item-title> -->
+             <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
-          <!-- <v-icon v-if="task.isUrgent" color="red">info</v-icon>
-          <v-icon v-else></v-icon> -->
+          <v-icon v-if="task.isUrgent" color="red">info</v-icon>
+          <v-icon v-else></v-icon>
      
 
           <v-list-item-action>
@@ -46,7 +46,7 @@
 <script>
   import NewTask from './NewTask'
   import PopupDelete from './Popups/PopupDelete'
-  // import {mapGetters} from 'vuex'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'tasks',
@@ -68,7 +68,7 @@
       },
     }),
     computed: {
-      // ...mapGetters(['TASKS'])
+      ...mapGetters(['TASKS'])
     },
     async mounted () {
       this.lists = await this.$store.dispatch("GET_LISTS")

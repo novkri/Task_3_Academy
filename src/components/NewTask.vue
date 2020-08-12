@@ -58,12 +58,11 @@ import { mapGetters } from 'vuex';
     methods: {
       async submit(title) {
         this.lists = await this.$store.dispatch("GET_LISTS")
+      
         this.paramsAddModal.listId = this.lists[this.$route.params.id].id
-        console.log(this.paramsAddModal.listId)
 
         this.paramsAddModal.titleTask = title
-        this.paramsAddModal.titleList = this.$route.params.id,
-          // еще передавать title list
+        this.paramsAddModal.titleList = this.lists[this.$route.params.id].title
           console.log("paramsAddModal", this.paramsAddModal);
         this.paramsAddModal.open = true
       },
@@ -74,40 +73,21 @@ import { mapGetters } from 'vuex';
         const task = await this.$store.dispatch("NEW_POST_TASK", {
           listid: this.paramsAddModal.listId,
           title: this.title,
-          isUrgent: this.isUrgent
+          isUrgent: this.isUrgent,
           // isComplete: false,
           // isUrgent: this.isUrgent,
-          // date: new Date().toLocaleString([], {
-          //   day: '2-digit',
-          //   month: '2-digit',
-          //   year: 'numeric',
-          //   hour: '2-digit',
-          //   minute: '2-digit'
-          // })
+          date: new Date().toLocaleString([], {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
         })
+        this.title = ''
+        this.isUrgent = false
         console.log('closepopup', task);
       }
     }
-
-
-    //     listid: this.$route.params.id,
-    //     title: this.title.trim(),
-    //     isComplete: false,
-    //     isUrgent: this.isUrgent,
-    //     date: new Date().toLocaleString([], {
-    //       day: '2-digit',
-    //       month: '2-digit',
-    //       year: 'numeric',
-    //       hour: '2-digit',
-    //       minute: '2-digit'
-    //     })
-    //   })
-    //   .then(response => {
-    //     console.log(response);
-    //     this.title = ''
-    //     this.isUrgent = false
-    //   })
-    //   .catch(error => console.log(error))
-
   }
 </script>

@@ -140,7 +140,7 @@ export default {
     GET_LISTS: async ({dispatch, commit}) => {
       const uid = await dispatch('GET_ID')
       console.log(uid, "uid");
-      const lists = (await firebase.database().ref(`/users/${uid}/lists`).once('value')).val()
+      const lists = (await firebase.database().ref(`/users/${uid}/lists`).once('value')).val() || {}
       console.log(lists);
       const listsWithId = Object.keys(lists).map(key => ({...lists[key], id: key}))
       commit("SET_LISTS", listsWithId)
@@ -184,7 +184,7 @@ export default {
       const uid = await dispatch('GET_ID')
 
       
-      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val()  //|| {} добавить проверку на null!
+      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
       let tasksFiltered = []
       for (let i = 0; i < Object.values(tasks).length; i++) {
         if (Object.values(tasks)[i].listid == listId) {
@@ -196,11 +196,11 @@ export default {
 
     },
 
-     NEW_POST_TASK: async ({ dispatch}, {listid, title, isUrgent}) => {
+     NEW_POST_TASK: async ({ dispatch}, {listid, title, isUrgent, date}) => {
       const uid = await dispatch('GET_ID')
 
 
-      await firebase.database().ref(`/users/${uid}/tasks`).push({listid, title, isUrgent})
+      await firebase.database().ref(`/users/${uid}/tasks`).push({listid, title, isUrgent, date})
       dispatch('GET_TASKS', listid)
 
     },

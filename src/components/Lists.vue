@@ -155,16 +155,20 @@
       toggle(idx) {
         console.log("toggle",idx)
         this.$store.dispatch("GET_TASKS", idx)
-        // if (this.$route.params.id !== idx) {
-          this.$router.push({
+        this.$router.push({
             name: 'tasks',
             params: {
               id: idx
             }
           })
-        // } else {
-        //   console.log(this.$route.params.id, "=", idx);
-        // }
+          .catch(err => {
+            if (
+              err.name !== 'NavigationDuplicated' &&
+              !err.message.includes('Avoided redundant navigation to current location')
+            ) {
+              console.error(err)
+            }
+          });
       },
 
       openNewListForm() {
