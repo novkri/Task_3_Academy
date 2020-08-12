@@ -5,22 +5,10 @@
 npm install
 ```
 
-Для имитации базы данных использовался json-server
 
-### Запуск с json-serverом (windows)
+### Run
 ```
 npm run serve
-
-```
-### Запуск с json-serverом (unix)
-```
-npm run serve2
-
-```
-
-### Запуск без сервера
-```
-npm run run
 
 ```
 

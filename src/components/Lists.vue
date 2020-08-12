@@ -70,7 +70,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{ list.title }}</v-list-item-title>
+            <v-list-item-title>{{ list.title }} {{i}} {{list.id}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -108,13 +108,24 @@
       PopupDelete
     },
     data: () => ({
-      // listsF: [],
+      listsWithId: [],
       paramsModal: {
         open: false,
         title: '',
         listId: undefined
       }
     }),
+    async mounted() {
+      console.log('mounted hook');
+      // this.listsWithId = await this.$store.dispatch('GET_LISTS')
+      // console.log(LISTS);
+    },
+    beforeUpdate() {
+      console.log('before update');
+    },
+    updated() {
+      console.log('updated');
+    },
     computed: {
       ...mapGetters(['LISTS']),
 
@@ -130,34 +141,36 @@
         return this.$store.getters.NEW_LIST_FORM
       },
     },
-    async mounted() {
-      await this.$store.dispatch("GET_LISTS")
-    },
+ 
     methods: {
-      closePopup() {
+       closePopup() {
         this.paramsModal.open = false
+
+
       },
       openModal(title, id) {
         this.paramsModal.title = title
         this.paramsModal.listId = id
-        console.log(this.paramsModal);
         this.paramsModal.open = true
+
+
       },
 
       // redirect to list clicked
       // !!!!!!!!!!!!!!!! check it more
       toggle(idx) {
-        console.log(this.$route.params.id, idx);
-        if (this.$route.params.id !== idx) {
-          this.$router.push({
-            name: 'tasks',
-            params: {
-              id: idx
-            }
-          })
-        } else {
-          console.log(this.$route.params.id, "=", idx);
-        }
+        console.log(this.$route.params.id, idx)
+        this.$store.dispatch("GET_TASKS", idx)
+        // if (this.$route.params.id !== idx) {
+          // this.$router.push({
+          //   name: 'tasks',
+          //   params: {
+          //     id: idx
+          //   }
+          // })
+        // } else {
+        //   console.log(this.$route.params.id, "=", idx);
+        // }
       },
 
       openNewListForm() {

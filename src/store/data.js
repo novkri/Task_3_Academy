@@ -25,6 +25,7 @@ export default {
     },
 
     LISTS: state => {
+      console.log('getter', state.lists);
       return state.lists
     },
 
@@ -53,8 +54,9 @@ export default {
     },
 
     // подзадачи
-    SET_TASKS: (state, {data}) => {
-      state.tasks = data
+    SET_TASKS: (state, payload) => {
+      state.tasks = payload
+      console.log('SET_tasks getter', state.tasks);
     },
     // SET_TASKS: (state, { data, listId }) => {
     //   Vue.set(
@@ -136,17 +138,22 @@ export default {
   actions: {
     // задачи
     GET_LISTS: async ({dispatch, commit}) => {
-      // let { data } = await axios.get('http://localhost:3000/lists')
       const uid = await dispatch('GET_ID')
-      const info = (await firebase.database().ref(`/users/${uid}/info/lists`).once('value')).val()
-      console.log(Object.values(info));
-      commit("SET_LISTS", Object.values(info))
+      const lists = (await firebase.database().ref(`/users/${uid}/lists`).once('value')).val()
+
+      const listsWithId = Object.keys(lists).map(key => ({...lists[key], id: key}))
+      console.log("GET_LISTS",listsWithId);
+      commit("SET_LISTS", listsWithId)
+      return listsWithId
+
     },
     async NEW_LIST_POST({dispatch}, {title}) {
       try {
           const uid = await dispatch('GET_ID')
-          const list = await firebase.database().ref(`/users/${uid}/info/lists`).push({title})
-          dispatch('GET_LISTS')
+          const list = await firebase.database().ref(`/users/${uid}/lists`).push({title})
+          await dispatch('GET_LISTS')
+          // commit("SET_LISTS", list)
+          // dispatch('GET_LISTS')
           return {title, id: list.key}
       } catch (e) {
           console.log(e)
@@ -172,22 +179,30 @@ export default {
     },
 
 
+
     // подзадачи
-    GET_TASKS: async ({ commit }, payload) => {
-      let { data } = await axios.get(`http://localhost:3000/lists/${payload}/tasks`)
-      commit("SET_TASKS", {data,listid: payload})
+    GET_TASKS: async ({ dispatch, commit}, listId) => {
+      const uid = await dispatch('GET_ID')
+      console.log("GET_TASKS store", listId);
+
+      
+
+      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val()
+
+      commit("SET_TASKS", tasks)
+      return tasks 
+
     },
 
-    POST_TASK: ({ commit }, {listid,...rest}) => {
-      return new Promise((resolve, reject) => {
-        axios.post(`http://localhost:3000/lists/${listid}/tasks`, rest).then(res => {
-            commit("ADD_TASK", res)
-            resolve(res)
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
+     NEW_POST_TASK: async ({ dispatch}, {listid, title, isUrgent}) => {
+      console.log('NEW_POST_TASK', listid, title, isUrgent)
+
+      const uid = await dispatch('GET_ID')
+
+
+      await firebase.database().ref(`/users/${uid}/tasks`).push({listid, title, isUrgent})
+      dispatch('GET_TASKS', listid)
+
     },
 
     DELETE_TASK: ({ commit }, {listid,index}) => {

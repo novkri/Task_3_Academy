@@ -4,7 +4,8 @@
       <v-container>
         <v-row>
           <v-col cols="12" lg="7">
-            <v-text-field v-model="title" solo label="Добавить новую подзадачу" append-icon="add" placeholder="Название">
+            <v-text-field v-model="title" solo label="Добавить новую подзадачу" append-icon="add"
+              placeholder="Название">
             </v-text-field>
           </v-col>
 
@@ -21,13 +22,15 @@
       </v-container>
     </v-form>
 
-    <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
+    <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal"
+      :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList" :listId="paramsAddModal.listId"/>
 
   </div>
 </template>
 
 <script>
   import PopupAdd from './Popups/PopupAdd'
+import { mapGetters } from 'vuex';
 
   export default {
     name: 'newTask',
@@ -38,49 +41,73 @@
       paramsAddModal: {
         open: false,
         titleTask: '',
-        titleList: ''
+        titleList: '',
+        listId: ''
       }
     }),
     components: {
       PopupAdd
     },
-    //   computed: {
+      computed: {
+        ...mapGetters(['LISTS']),
     //     canCreate() {
     //       return this.task.title.trim()
     //     }
-    // },
+    },
+    
     methods: {
-      submit(title) {
-        this.paramsAddModal.titleTask = title 
-        this.paramsAddModal.titleList = this.$route.params.id, 
-        // еще передавать title list
-        console.log("paramsAddModal", this.paramsAddModal);
+      async submit(title) {
+        this.lists = await this.$store.dispatch("GET_LISTS")
+        this.paramsAddModal.listId = this.lists[this.$route.params.id].id
+        console.log(this.paramsAddModal.listId)
+
+        this.paramsAddModal.titleTask = title
+        this.paramsAddModal.titleList = this.$route.params.id,
+          // еще передавать title list
+          console.log("paramsAddModal", this.paramsAddModal);
         this.paramsAddModal.open = true
       },
 
-      closePopup() {
+      async closePopup() {
         this.paramsAddModal.open = false
 
-        this.$store.dispatch("POST_TASK", {
-            listid: this.$route.params.id,
-            title: this.title.trim(),
-            isComplete: false,
-            isUrgent: this.isUrgent,
-            date: new Date().toLocaleString([], {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })
-          })
-          .then(response => {
-            console.log(response);
-            this.title = ''
-            this.isUrgent = false
-          })
-          .catch(error => console.log(error))
-      },
+        const task = await this.$store.dispatch("NEW_POST_TASK", {
+          listid: this.paramsAddModal.listId,
+          title: this.title,
+          isUrgent: this.isUrgent
+          // isComplete: false,
+          // isUrgent: this.isUrgent,
+          // date: new Date().toLocaleString([], {
+          //   day: '2-digit',
+          //   month: '2-digit',
+          //   year: 'numeric',
+          //   hour: '2-digit',
+          //   minute: '2-digit'
+          // })
+        })
+        console.log('closepopup', task);
+      }
     }
+
+
+    //     listid: this.$route.params.id,
+    //     title: this.title.trim(),
+    //     isComplete: false,
+    //     isUrgent: this.isUrgent,
+    //     date: new Date().toLocaleString([], {
+    //       day: '2-digit',
+    //       month: '2-digit',
+    //       year: 'numeric',
+    //       hour: '2-digit',
+    //       minute: '2-digit'
+    //     })
+    //   })
+    //   .then(response => {
+    //     console.log(response);
+    //     this.title = ''
+    //     this.isUrgent = false
+    //   })
+    //   .catch(error => console.log(error))
+
   }
 </script>

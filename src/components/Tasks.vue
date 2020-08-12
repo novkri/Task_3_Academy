@@ -8,12 +8,12 @@
 
           <v-list-item-content>
             <!-- добавить зачеркивание here when checked? -->
-            <v-list-item-title>{{ task.title }}</v-list-item-title>
-             <v-list-item-title>{{ task.date }}</v-list-item-title>
+            <v-list-item-title>{{ task.title }} taskid:{{index}} listid: {{task.listid}}</v-list-item-title>
+             <!-- <v-list-item-title>{{ task.date }}</v-list-item-title> -->
           </v-list-item-content>
 
-          <v-icon v-if="task.isUrgent" color="red">info</v-icon>
-          <v-icon v-else></v-icon>
+          <!-- <v-icon v-if="task.isUrgent" color="red">info</v-icon>
+          <v-icon v-else></v-icon> -->
      
 
           <v-list-item-action>
@@ -37,7 +37,7 @@
     </v-card>
 
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
-      :listId="paramsModal.taskId" @deleteList="deleteTask(paramsModal.taskId)" />
+      :listId="paramsModal.listId" @deleteList="deleteTask(paramsModal.taskId)" />
 
     <router-view :key="$route.fullPath"></router-view>
   </div>
@@ -58,22 +58,38 @@
       PopupDelete,
     },
     data: () => ({
+      lists: [],
+      tasks: [],
       paramsModal: {
         open: false,
         title: '',
-        taskId: undefined
+        taskId: undefined,
+        listId: ''
       },
-      // paramsAddModal: {
-      //   open: false,
-      //   titleTask: '',
-      //   titleList: ''
-      // }
     }),
     computed: {
       ...mapGetters(['TASKS'])
     },
     async mounted () {
-      await this.$store.dispatch("GET_TASKS", this.$route.params.id)
+      this.lists = await this.$store.dispatch("GET_LISTS")
+
+
+      console.log('mounted lists', this.lists[this.$route.params.id].id);
+      const thisListId = this.lists[this.$route.params.id].id
+
+      
+      const tasks = await this.$store.dispatch("GET_TASKS", thisListId) 
+        console.log(Object.values(tasks), Object.values(tasks).length);
+      for (let i = 0; i < Object.values(tasks).length; i++) {
+        if (Object.values(tasks)[i].listid == thisListId) {
+          console.log(Object.values(tasks)[i]);
+          this.tasks.push(Object.values(tasks)[i]) 
+        }
+        
+        
+      }
+
+      console.log('mounted here', this.lists , this.tasks);
     },
     methods: {
       toggle(index, complete) {
@@ -86,16 +102,17 @@
       });
   
       },
-      //  completed() {
-      //   // this.$store.commit("SET_TASKS")
-      // },
+       completed() {
+        this.$store.commit("SET_TASKS")
+      },
       // for popup
       closePopup() {
         this.paramsModal.open = false
       },
       openModal(title, id) {
-        this.paramsModal.title = title //сюда записался listId
-        this.paramsModal.listId = this.$route.params.id // сюда записался taskid
+        console.log("openModal", this.paramsModal.listId );
+        this.paramsModal.title = title 
+        // this.paramsModal.listId = this.$route.params.id // сюда записался taskid
         this.paramsModal.taskId = id 
         // еще передавать title
         console.log("openModal", this.paramsModal);
