@@ -7,10 +7,7 @@ import store from './store'
 import router from './router'
 
 import App from './App.vue'
-// import Login from './components/Auth/Login'
-// import Register from './components/Auth/Register'
-// import Todo from './components/Todo'
-// import Tasks from './components/Tasks' 
+
 
 import firebase from 'firebase/app'
 import 'firebase/auth'

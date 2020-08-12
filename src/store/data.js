@@ -25,7 +25,6 @@ export default {
     },
 
     LISTS: state => {
-      console.log('getter', state.lists);
       return state.lists
     },
 
@@ -47,7 +46,9 @@ export default {
     //   console.log(payload);
     //   state.lists.push(payload)
     // },
-
+    CLEAR_LISTS: (state) => {
+      state.lists = {}
+    },
     REMOVE_LIST: (state, payload) => {
       console.log("REMOVE_LIST", payload);
       state.lists = state.lists.filter(list => list.id !== payload)
@@ -56,7 +57,6 @@ export default {
     // подзадачи
     SET_TASKS: (state, payload) => {
       state.tasks = payload
-      console.log('SET_tasks getter', state.tasks);
     },
     // SET_TASKS: (state, { data, listId }) => {
     //   Vue.set(
@@ -139,10 +139,10 @@ export default {
     // задачи
     GET_LISTS: async ({dispatch, commit}) => {
       const uid = await dispatch('GET_ID')
+      console.log(uid, "uid");
       const lists = (await firebase.database().ref(`/users/${uid}/lists`).once('value')).val()
-
+      console.log(lists);
       const listsWithId = Object.keys(lists).map(key => ({...lists[key], id: key}))
-      console.log("GET_LISTS",listsWithId);
       commit("SET_LISTS", listsWithId)
       return listsWithId
 
@@ -152,8 +152,7 @@ export default {
           const uid = await dispatch('GET_ID')
           const list = await firebase.database().ref(`/users/${uid}/lists`).push({title})
           await dispatch('GET_LISTS')
-          // commit("SET_LISTS", list)
-          // dispatch('GET_LISTS')
+
           return {title, id: list.key}
       } catch (e) {
           console.log(e)
@@ -183,20 +182,21 @@ export default {
     // подзадачи
     GET_TASKS: async ({ dispatch, commit}, listId) => {
       const uid = await dispatch('GET_ID')
-      console.log("GET_TASKS store", listId);
 
       
-
-      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val()
-
-      commit("SET_TASKS", tasks)
-      return tasks 
+      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val()  //|| {} добавить проверку на null!
+      let tasksFiltered = []
+      for (let i = 0; i < Object.values(tasks).length; i++) {
+        if (Object.values(tasks)[i].listid == listId) {
+          tasksFiltered.push(Object.values(tasks)[i]) 
+        }
+      }
+      commit("SET_TASKS", tasksFiltered)
+      return tasksFiltered 
 
     },
 
      NEW_POST_TASK: async ({ dispatch}, {listid, title, isUrgent}) => {
-      console.log('NEW_POST_TASK', listid, title, isUrgent)
-
       const uid = await dispatch('GET_ID')
 
 
@@ -207,6 +207,7 @@ export default {
 
     DELETE_TASK: ({ commit }, {listid,index}) => {
       console.log("DELETE_TASK", listid, index)
+
       return new Promise((resolve, reject) => {
         axios.delete(`http://localhost:3000/tasks/${index}`)
           .then(res => {
@@ -221,9 +222,7 @@ export default {
     },
 
     TOGGLE_TASK: async ({ commit }, { taskId, isComplete, listId }) => {
-      console.log( taskId, isComplete, listId);
       let { data } = await axios.patch(`http://localhost:3000/tasks/${taskId}`, {isComplete})
-      console.log("TOGGLE_TASK", data);
       commit("SET_TASK_STATUS", {
         data,
         taskId,

@@ -1,7 +1,7 @@
 <template>
     <v-card class="mx-auto mt-6" style="max-width: 500px;">
       <v-toolbar color="grey darken-3" cards dark flat>
-        <v-card-title>Логин</v-card-title>
+        <v-card-title>Регистрация</v-card-title>
       </v-toolbar>
 
       <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
@@ -19,7 +19,7 @@
         <v-btn :disabled="!form" class="success" depressed @click="submitHandler">Войти
         </v-btn>
         <v-spacer></v-spacer>
-        <div class="text--primary">Есть аккаунт? <router-link to="/login">Зарегистрироваться</router-link></div>
+        <div class="text--primary">Есть аккаунт? <router-link to="/login">Войти</router-link></div>
       </v-card-actions>
     </v-card>
 </template>

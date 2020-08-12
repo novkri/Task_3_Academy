@@ -2,7 +2,7 @@
   <div>
     <v-card style="height: 100%; overflow: hidden;">
 
-      <v-list two-line v-for="(task, index) in TASKS" :key="index">
+      <v-list two-line v-for="(task, index) in tasks" :key="index">
         <v-list-item>
           <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(task.id,task.isComplete)"></v-checkbox>
 
@@ -46,7 +46,7 @@
 <script>
   import NewTask from './NewTask'
   import PopupDelete from './Popups/PopupDelete'
-  import {mapGetters} from 'vuex'
+  // import {mapGetters} from 'vuex'
 
   export default {
     name: 'tasks',
@@ -68,7 +68,7 @@
       },
     }),
     computed: {
-      ...mapGetters(['TASKS'])
+      // ...mapGetters(['TASKS'])
     },
     async mounted () {
       this.lists = await this.$store.dispatch("GET_LISTS")
@@ -76,19 +76,11 @@
 
       console.log('mounted lists', this.lists[this.$route.params.id].id);
       const thisListId = this.lists[this.$route.params.id].id
+      console.log('thisListId', thisListId);
 
       
-      const tasks = await this.$store.dispatch("GET_TASKS", thisListId) 
-        console.log(Object.values(tasks), Object.values(tasks).length);
-      for (let i = 0; i < Object.values(tasks).length; i++) {
-        if (Object.values(tasks)[i].listid == thisListId) {
-          console.log(Object.values(tasks)[i]);
-          this.tasks.push(Object.values(tasks)[i]) 
-        }
-        
-        
-      }
-
+      this.tasks = await this.$store.dispatch("GET_TASKS", thisListId) 
+      
       console.log('mounted here', this.lists , this.tasks);
     },
     methods: {

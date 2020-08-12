@@ -27,6 +27,7 @@
 import Lists from './Lists'
 // import firebase from 'firebase/app'
 
+
   export default {
     name: "todo",
     data: () => ({
@@ -39,7 +40,8 @@ import Lists from './Lists'
     computed: {
       username() {
         return this.$store.getters.info.username
-      }
+      },
+
     },
     async mounted() {
 

@@ -62,7 +62,7 @@
 
       <!-- lists -->
       <v-list>
-        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(list.id)">
+        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)">
           <v-list-item-action>
             <v-btn icon @click.stop="openModal(list.title, list.id)">
               <v-icon>delete</v-icon>
@@ -117,15 +117,9 @@
     }),
     async mounted() {
       console.log('mounted hook');
-      // this.listsWithId = await this.$store.dispatch('GET_LISTS')
-      // console.log(LISTS);
+      this.listsWithId = await this.$store.dispatch('GET_LISTS')
     },
-    beforeUpdate() {
-      console.log('before update');
-    },
-    updated() {
-      console.log('updated');
-    },
+
     computed: {
       ...mapGetters(['LISTS']),
 
@@ -159,15 +153,15 @@
       // redirect to list clicked
       // !!!!!!!!!!!!!!!! check it more
       toggle(idx) {
-        console.log(this.$route.params.id, idx)
+        console.log("toggle",idx)
         this.$store.dispatch("GET_TASKS", idx)
         // if (this.$route.params.id !== idx) {
-          // this.$router.push({
-          //   name: 'tasks',
-          //   params: {
-          //     id: idx
-          //   }
-          // })
+          this.$router.push({
+            name: 'tasks',
+            params: {
+              id: idx
+            }
+          })
         // } else {
         //   console.log(this.$route.params.id, "=", idx);
         // }
