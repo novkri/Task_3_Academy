@@ -74,8 +74,7 @@ import { mapGetters } from 'vuex';
           listid: this.paramsAddModal.listId,
           title: this.title,
           isUrgent: this.isUrgent,
-          // isComplete: false,
-          // isUrgent: this.isUrgent,
+          isComplete: false,
           date: new Date().toLocaleString([], {
             day: '2-digit',
             month: '2-digit',

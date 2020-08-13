@@ -4,11 +4,11 @@
 
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
         <v-list-item>
-          <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(task.id,task.isComplete)"></v-checkbox>
+          <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
           <v-list-item-content>
             <!-- добавить зачеркивание here when checked? -->
-            <v-list-item-title>{{ task.title }} taskid:{{index}} listid: {{task.listid}}</v-list-item-title>
+            <v-list-item-title>{{task.isComplete}} {{ task.title }} taskid:{{index}} listid: {{task.listid}}</v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
@@ -72,31 +72,29 @@
     },
     async mounted () {
       this.lists = await this.$store.dispatch("GET_LISTS")
-
-
-      console.log('mounted lists', this.lists[this.$route.params.id].id);
       const thisListId = this.lists[this.$route.params.id].id
-      console.log('thisListId', thisListId);
-
-      
+      // убрать
       this.tasks = await this.$store.dispatch("GET_TASKS", thisListId) 
-      
-      console.log('mounted here', this.lists , this.tasks);
+      console.log('mounted');
+      // ,убрать
+      // console.log('mounted here', this.lists , this.tasks);
+
     },
     methods: {
-      toggle(index, complete) {
-
-        console.log(index, complete)
+      async toggle(index, complete, title) {
+        const thisListId = this.lists[this.$route.params.id].id
+        console.log('thisListId', thisListId);
         this.$store.dispatch("TOGGLE_TASK", {
+        thisListId,
         taskId: index,
         isComplete: complete,
-        listId: this.$route.params.id
+        title
       });
   
       },
-       completed() {
-        this.$store.commit("SET_TASKS")
-      },
+      //  completed() {
+      //   this.$store.commit("SET_TASKS")
+      // },
       // for popup
       closePopup() {
         this.paramsModal.open = false
