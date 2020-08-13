@@ -5,57 +5,6 @@
         <v-toolbar-title>Задачи</v-toolbar-title>
       </v-toolbar>
 
-      <v-list dense>
-        <v-list-group no-action>
-          <v-list-item slot="activator">
-            <v-list-item-icon>
-              <v-icon>sort</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title >Сортировать по</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item @click="sortBy('title')">
-            <v-list-item-content>
-              <v-list-item-title>Имени</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-
-
-        <!-- <v-list-action>
-          <v-btn><v-icon>filter_list</v-icon>Фильтровать по</v-btn>
-        </v-list-action> -->
-        <v-list-group no-action>
-          <v-list-item slot="activator">
-          <v-list-item-icon>
-              <v-icon>filter_list</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title >Фильтровать по</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item @click="filterBy('all')">
-            <v-list-item-content>
-              <v-list-item-title>Все</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="filterBy('completed')">
-            <v-list-item-content>
-              <v-list-item-title>Завершенные</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="filterBy('remaining')">
-            <v-list-item-content>
-              <v-list-item-title>Незавершенные</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-        </v-list-group>
-      </v-list>
-
       <v-divider></v-divider>
 
       <v-list>
@@ -135,15 +84,11 @@
     methods: {
        closePopup() {
         this.paramsModal.open = false
-
-
       },
       openModal(title, id) {
         this.paramsModal.title = title
         this.paramsModal.listId = id
         this.paramsModal.open = true
-
-
       },
 
       toggle(idx) {

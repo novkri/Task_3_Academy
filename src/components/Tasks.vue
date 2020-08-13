@@ -81,12 +81,11 @@
         const thisListId = this.lists[this.$route.params.id].id
         console.log('thisListId', thisListId);
         this.$store.dispatch("TOGGLE_TASK", {
-        thisListId,
-        taskId: index,
-        isComplete: complete,
-        title
-      });
-  
+          thisListId,
+          taskId: index,
+          isComplete: complete,
+          title
+        })
       },
 
       closePopup() {

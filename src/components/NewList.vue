@@ -53,18 +53,9 @@ import PopupAdd from './Popups/PopupAdd'
       async closePopup() {
         this.paramsAddModal.open = false
         const list = await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
-        console.log(list);
         this.title = ''
-        
-        //     this.$router.push({
-        //       name: 'tasks',
-        //       params: {
-        //         id: response.data.id
-        //       }
-        //     })
 
         this.$store.commit("SET_NEW_LIST_FORM", false)
-
       }
     }
   }

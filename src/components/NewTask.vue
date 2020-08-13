@@ -57,10 +57,8 @@ import { mapGetters } from 'vuex';
         this.lists = await this.$store.dispatch("GET_LISTS")
       
         this.paramsAddModal.listId = this.lists[this.$route.params.id].id
-
         this.paramsAddModal.titleTask = title
         this.paramsAddModal.titleList = this.lists[this.$route.params.id].title
-          console.log("paramsAddModal", this.paramsAddModal);
         this.paramsAddModal.open = true
       },
 
@@ -82,7 +80,6 @@ import { mapGetters } from 'vuex';
         })
         this.title = ''
         this.isUrgent = false
-        console.log('closepopup', task);
       }
     }
   }
