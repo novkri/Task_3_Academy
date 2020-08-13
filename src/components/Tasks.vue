@@ -86,6 +86,10 @@
           isComplete: complete,
           title
         })
+        // console.log(this.tasks);
+        for (let i = 0; i < this.tasks.length; i++) {
+          console.log(this.tasks[i].isComplete);
+        }//send to Lists.vue?
       },
 
       closePopup() {
