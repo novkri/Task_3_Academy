@@ -123,6 +123,7 @@ export default {
     },
     GET_RAW_TASKS: async ({ dispatch}, listId) => {
       const uid = await dispatch('GET_ID')
+      console.log(listId);
       const rawTasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
       // commit("SET_TASKS", rawTasks) 
       return rawTasks 
@@ -154,6 +155,7 @@ export default {
     TOGGLE_TASK: async ({dispatch}, { thisListId, taskId, isComplete, title }) => {
       const uid = await dispatch('GET_ID')
       const t = await dispatch('GET_RAW_TASKS', thisListId)
+      console.log(taskId);
       let thisTaskId = ''
       // let thisTask = {}
 
