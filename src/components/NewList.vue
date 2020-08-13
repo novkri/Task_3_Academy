@@ -54,7 +54,7 @@ import PopupAdd from './Popups/PopupAdd'
         this.paramsAddModal.open = false
         const list = await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
         this.title = ''
-
+        console.log(list);
         this.$store.commit("SET_NEW_LIST_FORM", false)
       }
     }

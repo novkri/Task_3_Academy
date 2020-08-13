@@ -80,6 +80,7 @@ import { mapGetters } from 'vuex';
         })
         this.title = ''
         this.isUrgent = false
+        console.log(task);
       }
     }
   }
