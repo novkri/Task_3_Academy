@@ -7,8 +7,8 @@
           <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
           <v-list-item-content>
-            <!-- добавить зачеркивание here when checked? -->
-            <v-list-item-title>{{task.isComplete}} {{ task.title }} taskid:{{index}} listid: {{task.listid}}</v-list-item-title>
+           <!-- {{task.isComplete}} taskid:{{index}} listid: {{task.listid}} -->
+            <v-list-item-title>{{ task.title }}</v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
@@ -68,17 +68,13 @@
       },
     }),
     computed: {
-      ...mapGetters(['TASKS'])
+      ...mapGetters(['TASKS']),
+      
     },
     async mounted () {
       this.lists = await this.$store.dispatch("GET_LISTS")
       const thisListId = this.lists[this.$route.params.id].id
-      // убрать
       this.tasks = await this.$store.dispatch("GET_TASKS", thisListId) 
-      console.log('mounted');
-      // ,убрать
-      // console.log('mounted here', this.lists , this.tasks);
-
     },
     methods: {
       async toggle(index, complete, title) {
@@ -92,36 +88,29 @@
       });
   
       },
-      //  completed() {
-      //   this.$store.commit("SET_TASKS")
-      // },
-      // for popup
+
       closePopup() {
         this.paramsModal.open = false
       },
       openModal(title, id) {
-        console.log("openModal", this.paramsModal.listId );
         this.paramsModal.title = title 
-        // this.paramsModal.listId = this.$route.params.id // сюда записался taskid
         this.paramsModal.taskId = id 
-        // еще передавать title
-        console.log("openModal", this.paramsModal);
         this.paramsModal.open = true
       },
 
-      async deleteTask(index) {
-        console.log(index);
-        await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
-          .then(response => {
-            // + перенаправлнеи на lists/ ?
-            // this.$router.push({
-            //   name: 'task',
-            //   params: {taskId: this.$route.params.id}
-            // })
-            console.log(response, "DELETE_TASK done");
-          })
-          .catch(error => console.log(error))
-      }
+      // async deleteTask(index) {
+      //   console.log(index);
+      //   await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
+      //     .then(response => {
+      //       // + перенаправлнеи на lists/ ?
+      //       // this.$router.push({
+      //       //   name: 'task',
+      //       //   params: {taskId: this.$route.params.id}
+      //       // })
+      //       console.log(response, "DELETE_TASK done");
+      //     })
+      //     .catch(error => console.log(error))
+      // }
     }
   }
 </script>

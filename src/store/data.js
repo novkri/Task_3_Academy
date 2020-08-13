@@ -1,10 +1,3 @@
-// import Vue from 'vue'
-// import Vuex from 'vuex'
-// import auth from './auth'
-// import axios from 'axios'
-
-// Vue.use(Vuex)
-import axios from 'axios'
 import firebase from 'firebase/app'
 
 export default {
@@ -36,7 +29,6 @@ export default {
       state.newListForm = payload
     },
 
-    // задачи
     SET_LISTS: (state, payload) => {
       state.lists = payload
     },
@@ -47,17 +39,16 @@ export default {
     CLEAR_LISTS: (state) => {
       state.lists = {}
     },
-    REMOVE_LIST: (state, payload) => {
-      console.log("REMOVE_LIST", payload);
-      state.lists = state.lists.filter(list => list.id !== payload)
-    },
+    // REMOVE_LIST: (state, payload) => {
+    //   console.log("REMOVE_LIST", payload);
+    //   state.lists = state.lists.filter(list => list.id !== payload)
+    // },
 
-    // подзадачи
+
     SET_TASKS: (state, payload) => {
       console.log('SET_TASKS', state.tasks,  payload);
       //       return state.tasks.filter(task => task.listid == listId)
       // console.log(rawTasks.filer(t => t.id));
-      console.log("set !!!");
       state.tasks = payload
 
     },
@@ -68,10 +59,10 @@ export default {
     //   state.tasks.push(data)
     // },
 
-    REMOVE_TASK: (state, payload) => {
-      console.log("REMOVE_TASK", payload);
-      state.tasks = state.tasks.filter(task => task.id !== payload)
-    },
+    // REMOVE_TASK: (state, payload) => {
+    //   console.log("REMOVE_TASK", payload);
+    //   state.tasks = state.tasks.filter(task => task.id !== payload)
+    // },
 
 
     SET_TASK_STATUS: (state, payload) => {
@@ -86,52 +77,10 @@ export default {
       
     },
 
-    //сортировка
-    SET_LIST_SORT: (state, {val}) => {
-      state.lists.sortValue = val
-      console.log(state.lists);
-    },
-    SORT_LIST_BY: (state, {val}) => {
-      state.lists.sort((a, b) => a[val] < b[val] ? -1 : 1)
-      console.log(state.lists);
-    },
-
-
-    //filter
-    SET_LIST_FILTER: (state, {val}) => {
-      state.lists.filterValue = val
-      console.log("SET_LIST_FILTER", state.lists, val,state.lists.filterValue = val );
-    },
-
-    FILTER_LIST_BY: (state, {filter_query}) => {
-      let tasks = state.tasks
-      let arr = []
-
-      switch (filter_query) {
-        case "remaining":
-          arr = tasks.filter(task => {
-            return !task.isComplete
-          })
-          break
-
-          case "completed":
-          arr = tasks.filter(task => {
-            return task.isComplete
-          })
-          console.log(arr);
-          break
-
-          case "all":
-          arr = tasks
-          break
-      }
-      state.tasks = [...arr]
-    },
 
 
   },
   actions: {
-    // задачи
     GET_LISTS: async ({dispatch, commit}) => {
       const uid = await dispatch('GET_ID')
       console.log(uid, "uid");
@@ -154,23 +103,22 @@ export default {
           throw e
       }
     },
-    DELETE_LIST: ({ commit }, payload) => {
-      console.log(payload)
-      return new Promise((resolve, reject) => {
-        axios.delete(`http://localhost:3000/lists?id=${payload}`)
-        .then(res => {
-          console.log("REMOVE_LIST actions", payload);
-          commit("REMOVE_LIST",  payload)
-          resolve(res)
+    // DELETE_LIST: ({ commit }, payload) => {
+    //   console.log(payload)
+    //   return new Promise((resolve, reject) => {
+    //     axios.delete(`http://localhost:3000/lists?id=${payload}`)
+    //     .then(res => {
+    //       console.log("REMOVE_LIST actions", payload);
+    //       commit("REMOVE_LIST",  payload)
+    //       resolve(res)
           
-        })
-        .catch(error => {
-          reject(error)
-        })
-      })
-    },
+    //     })
+    //     .catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
 
-    // подзадачи
     GET_TASKS: async ({ dispatch, commit}, listId) => {
       const uid = await dispatch('GET_ID')
 
@@ -188,7 +136,7 @@ export default {
       return tasksFiltered 
 
     },
-    GET_ROW_TASKS: async ({ dispatch}, listId) => {
+    GET_RAW_TASKS: async ({ dispatch}, listId) => {
       const uid = await dispatch('GET_ID')
       const rawTasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
       console.log(rawTasks, listId);
@@ -224,70 +172,23 @@ export default {
       const uid = await dispatch('GET_ID')
       console.log('TOGGLE_TASK', taskId, isComplete, title);
 
-      const t = await dispatch('GET_ROW_TASKS', thisListId)
+      const t = await dispatch('GET_RAW_TASKS', thisListId)
       let thisTaskId = ''
-      let thisTask = {}
+      // let thisTask = {}
       console.log(t, Object.keys(t).length);
       for (let i = 0; i < Object.keys(t).length; i++) {
         if (Object.values(t)[i].listid == thisListId && Object.values(t)[i].title == title) {
-          // console.log("/////",Object.values(t)[i].listid == thisListId);
-          // if (i == taskId) {
-            console.log(i, taskId);
-            // console.log("!!!!!",  Object.keys(t)[i]);
             thisTaskId =  Object.keys(t)[i]
-            // console.log("thisTaskId", thisTaskId);
-            thisTask = Object.values(t)[i]
-            // return Object.keys(t)[i]
-          // }
+            // thisTask = Object.values(t)[i]
         }
       }
-      console.log(thisTask);
       // commit("SET_TASK_STATUS", {
       //   taskId,
       //   isComplete,
       //   thisListId,
       //   title
       // })
-      await firebase.database().ref(`/users/${uid}/tasks/${thisTaskId}`).update({isComplete})
-      console.log("toggle");
-
-
-      // const tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
-      // commit("SET_TASKS", t)
-      // return t 
-
-      // let { data } = await axios.patch(`http://localhost:3000/tasks/${taskId}`, {isComplete})
-      
-    },
-
-    
-
-    //фильтры
-    SORT_BY: ({ commit }, {val}) => {
-      axios.get(`http://localhost:3000/lists`, {
-        sortBy: val
-      })
-      .then(response => {
-        console.log("SORT_BY",response);
-        commit("SET_LIST_SORT", {val})
-        commit("SORT_LIST_BY", {val})
-      })
-      .catch(error => console.log(error))
-    },
-
-
-
-    FILTER_BY: ({ commit }, {val}) => {
-      axios.get(`http://localhost:3000/lists`, {
-        filterBy: val
-      })
-      .then(response => {
-        console.log(response);
-
-        commit("SET_LIST_FILTER", {val})
-        commit("FILTER_LIST_BY", {filter_query: val})
-      })
-      .catch(error => console.log(error))
-    },
+      await firebase.database().ref(`/users/${uid}/tasks/${thisTaskId}`).update({isComplete})      
+    }
   }
 }

@@ -45,18 +45,6 @@ import PopupAdd from './Popups/PopupAdd'
     components: {
       PopupAdd
     },
-    beforeUpdate() {
-      console.log('before update new');
-    },
-    updated() {
-      console.log('updated new');
-    },
-    beforeDestroy() {
-      console.log('beforeDestroy new');
-    },
-    destroyed() {
-      console.log('destroyed new');
-    },
     methods: {
       submit(title) {
         this.paramsAddModal.titleTask = title
@@ -77,9 +65,6 @@ import PopupAdd from './Popups/PopupAdd'
 
         this.$store.commit("SET_NEW_LIST_FORM", false)
 
-      },
-      closeForm() {
-        // this.$store.commit("SET_NEW_LIST_FORM", false)
       }
     }
   }

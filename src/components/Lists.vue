@@ -5,8 +5,6 @@
         <v-toolbar-title>Задачи</v-toolbar-title>
       </v-toolbar>
 
-      <!-- изменить внешний вид -->
-      <!-- сортировка -->
       <v-list dense>
         <v-list-group no-action>
           <v-list-item slot="activator">
@@ -24,7 +22,7 @@
           </v-list-item>
         </v-list-group>
 
-        <!-- фильтры -->
+
         <!-- <v-list-action>
           <v-btn><v-icon>filter_list</v-icon>Фильтровать по</v-btn>
         </v-list-action> -->
@@ -60,7 +58,6 @@
 
       <v-divider></v-divider>
 
-      <!-- lists -->
       <v-list>
         <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)">
           <v-list-item-action>
@@ -70,7 +67,8 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{ list.title }} {{i}} {{list.id}}</v-list-item-title>
+            <!-- {{i}} {{list.id}} -->
+            <v-list-item-title>{{ list.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -88,8 +86,6 @@
 
     </v-navigation-drawer>
 
-    <!-- popup -->
-    <!-- !! clean some parameters here !! -->
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" @deleteList="deleteList(paramsModal.listId)" />
   </div>
@@ -150,8 +146,6 @@
 
       },
 
-      // redirect to list clicked
-      // !!!!!!!!!!!!!!!! check it more
       toggle(idx) {
         console.log("toggle",idx)
         this.$store.dispatch("GET_TASKS", idx)
@@ -175,24 +169,13 @@
         this.$store.commit("SET_NEW_LIST_FORM", true)
       },
 
-      async deleteList(index) {
-        await this.$store.dispatch("DELETE_LIST", index)
-          .then(response => {
-              // + перенаправлнеи на lists here maybe??? 
-              // this.$router.push({
-              //   name: 'todo'
-              // })
-              console.log(response, "DELETE_LIST done");
-            })
-          .catch(error => console.log(error))
-      },
-
-      sortBy(val) {
-        this.$store.dispatch("SORT_BY", { val });
-      },
-      filterBy(val) {
-        this.$store.dispatch("FILTER_BY", { val });
-      }
+      // async deleteList(index) {
+      //   await this.$store.dispatch("DELETE_LIST", index)
+      //     .then(response => {
+      //         console.log(response, "DELETE_LIST done");
+      //       })
+      //     .catch(error => console.log(error))
+      // },
     }
   }
 </script>

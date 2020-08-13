@@ -50,9 +50,6 @@ import { mapGetters } from 'vuex';
     },
       computed: {
         ...mapGetters(['LISTS']),
-    //     canCreate() {
-    //       return this.task.title.trim()
-    //     }
     },
     
     methods: {
