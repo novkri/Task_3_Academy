@@ -7,6 +7,7 @@ export default {
     lists: [],
 
     tasks: [],
+    isCompleted: []
   },
   getters: {
     NEW_LIST_FORM: state => {
@@ -20,6 +21,9 @@ export default {
     TASKS: state => {
       return state.tasks
     },
+    DONE_TASKS: state => {
+      return state.isCompleted
+    }
   },
   mutations: {
     SET_NEW_LIST_FORM: (state, payload) => {
@@ -43,10 +47,10 @@ export default {
 
 
     SET_TASKS: (state, payload) => {
-      //       return state.tasks.filter(task => task.listid == listId)
-      // console.log(rawTasks.filer(t => t.id));
       state.tasks = payload
-
+    },
+    SET_COMPLETED: (state, payload) => {
+      state.isCompleted = payload
     },
 
     // ADD_TASK: (state, { data, listId }) => {
@@ -74,9 +78,11 @@ export default {
     GET_LISTS: async ({dispatch, commit}) => {
       const uid = await dispatch('GET_ID')
       const lists = (await firebase.database().ref(`/users/${uid}/lists`).once('value')).val() || {}
-      console.log(lists);
+      
       const listsWithId = Object.keys(lists).map(key => ({...lists[key], id: key}))
+      
       commit("SET_LISTS", listsWithId)
+
       return listsWithId
     },
     async NEW_LIST_POST({dispatch}, {title}) {
@@ -106,20 +112,33 @@ export default {
     //   })
     // },
 
+    GET_ALL_TASKS: async ({ dispatch}) => {
+      const uid = await dispatch('GET_ID')
+
+      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
+      const tasksWithId = Object.keys(tasks).map(key => ({...tasks[key], id: key}))
+      return tasksWithId
+    }, 
+
     GET_TASKS: async ({ dispatch, commit}, listId) => {
       const uid = await dispatch('GET_ID')
 
       let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
       let tasksFiltered = []
+      let isCompleted = []
       for (let i = 0; i < Object.values(tasks).length; i++) {
         if (Object.values(tasks)[i].listid == listId) {
-          tasksFiltered.push(Object.values(tasks)[i]) 
+          tasksFiltered.push(Object.values(tasks)[i])
+          if (Object.values(tasks)[i].isComplete) {
+            isCompleted.push(Object.values(tasks)[i].isComplete)
+          }
         }
       }
+      commit("SET_TASKS", tasksFiltered)
 
-      // commit("SET_TASKS", tasksFiltered, listId) 
-      commit("SET_TASKS", tasksFiltered) 
-      return tasksFiltered 
+      commit("SET_COMPLETED", isCompleted)
+      // console.log(tasksFiltered,isCompleted);
+      return tasksFiltered
     },
     GET_RAW_TASKS: async ({ dispatch}, listId) => {
       const uid = await dispatch('GET_ID')
@@ -171,7 +190,9 @@ export default {
       //   thisListId,
       //   title
       // })
-      await firebase.database().ref(`/users/${uid}/tasks/${thisTaskId}`).update({isComplete})      
+
+      await firebase.database().ref(`/users/${uid}/tasks/${thisTaskId}`).update({isComplete})
+      await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: isComplete})
     }
   }
 }

@@ -8,7 +8,7 @@
       <v-divider></v-divider>
 
       <v-list>
-        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)">
+        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)" :style="{'background-color': list.completed == null? 'white' : list.completed ? 'green' : 'grey'}">
           <v-list-item-action>
             <v-btn icon @click.stop="openModal(list.title, list.id)">
               <v-icon>delete</v-icon>
@@ -17,7 +17,7 @@
 
           <v-list-item-content>
             <!-- {{i}} {{list.id}} -->
-            <v-list-item-title>{{ list.title }}</v-list-item-title>
+            <v-list-item-title >{{ list.title }} {{list.id}} {{list.completed}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -54,6 +54,8 @@
     },
     data: () => ({
       listsWithId: [],
+      isCompleted: [],
+      tasks: [],
       paramsModal: {
         open: false,
         title: '',
@@ -67,6 +69,7 @@
 
     computed: {
       ...mapGetters(['LISTS']),
+
 
       openNewListFormValue: {
         get() {
@@ -91,9 +94,11 @@
         this.paramsModal.open = true
       },
 
-      toggle(idx) {
+      async toggle(idx) {
         console.log("toggle",idx)
-        this.$store.dispatch("GET_TASKS", idx)
+        await this.$store.dispatch("GET_TASKS", idx)
+ 
+        
         this.$router.push({
             name: 'tasks',
             params: {
@@ -107,7 +112,7 @@
             ) {
               console.error(err)
             }
-          });
+          })
       },
 
       openNewListForm() {

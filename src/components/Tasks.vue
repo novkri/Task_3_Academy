@@ -60,6 +60,7 @@
     data: () => ({
       lists: [],
       tasks: [],
+      isCompleted: [],
       paramsModal: {
         open: false,
         title: '',
@@ -88,7 +89,8 @@
         })
         // console.log(this.tasks);
         for (let i = 0; i < this.tasks.length; i++) {
-          console.log(this.tasks[i].isComplete);
+          console.log(this.tasks[i].isComplete)
+          this.isCompleted.push(this.tasks[i].isComplete)
         }//send to Lists.vue?
       },
 
