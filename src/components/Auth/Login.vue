@@ -1,9 +1,14 @@
 <template>
-    <v-card class="mx-auto mt-6" style="max-width: 500px;">
+<div>
+  <!-- <v-card v-if="error">{{error}}</v-card> -->
+  <v-snackbar v-model="error" v-if="error">
+    {{ error }} 
+  </v-snackbar>
+  <v-card class="mx-auto mt-6" style="max-width: 500px;">
       <v-toolbar color="grey darken-3" cards dark flat>
         <v-card-title>Логин</v-card-title>
       </v-toolbar>
-
+      
       <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
         <v-text-field v-model="email" :rules="[rules.email, rules.required]" filled label="Email"
           type="email"></v-text-field>
@@ -20,6 +25,8 @@
         <div class="text--primary">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></div>
       <!-- </v-card-actions> --></v-form>
     </v-card>
+</div>
+    
 </template>
 
 <script>
@@ -37,6 +44,7 @@
         password: v => !!v || 'Пароль не может быть пустым',
         required: v => !!v || 'Это поле не может быть пустым',
       },
+      error: ''
     }),
     methods: {
       async submitHandler() {
@@ -58,7 +66,9 @@
                 }
               });
             } catch (error) {
-              console.log(error);
+              // code: "auth/user-not-found", code: "auth/invalid-email",
+              error.code == "auth/invalid-email" ? this.error = 'Некорректный email' : this.error = 'Такого пользователя не существует'
+              // this.error = error
             }
         }
       },

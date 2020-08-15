@@ -6,8 +6,67 @@
       </v-toolbar>
 
       <v-divider></v-divider>
-
+<!-- items: [{
+          action: "sort",
+          title: "Sort by",
+          active: true,
+          items: [
+            {
+              title: "Name",
+              by: "name"
+            },
+          ]
+        },
+        {
+          action: "filter_list",
+          title: "Filter by",
+          active: false,
+          items: [{
+              title: "Remaining",
+              by: "remaining"
+            },
+            {
+              title: "Completed",
+              by: "completed"
+            },
+            {
+              title: "All",
+              by: "all"
+            }
+          ]
+        }
+      ] -->
       <v-list>
+        <v-list-group v-model="sortItem.active" prepend-icon="sort" no-action>
+          <v-list-item slot="activator">
+            <v-list-item-content>
+              <v-list-item-title>Сортировать по</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click.prevent="sort" active-class> <!-- "sort(sortItem.by)" -->
+            <v-list-item-content>
+              <v-list-item-title>Имени</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+
+<!-- v-for="(item, idx) in filterItem" :key="idx" -->
+        <v-list-group v-model="filterItem.active" prepend-icon="filter_list" no-action>
+          <v-list-item slot="activator">
+            <v-list-item-content>
+              <v-list-item-title>Фильтровать по</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item v-for="(subFilter, idx) in filters" :key="idx" active-class @click="filter(subFilter.by)">
+            <v-list-item-content>
+              <v-list-item-title>{{ subFilter.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+
+
         <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)" :style="{'background-color': list.completed == null? 'white' : list.completed ? 'green' : 'grey'}">
           <v-list-item-action>
             <v-btn icon @click.stop="openModal(list.title, list.id)">
@@ -16,10 +75,10 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <!-- {{i}} {{list.id}} -->
-            <v-list-item-title >{{ list.title }} {{list.id}} {{list.completed}}</v-list-item-title>
+            <v-list-item-title >{{ list.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        
       </v-list>
 
       <v-divider></v-divider>
@@ -60,6 +119,28 @@
         open: false,
         title: '',
         listId: undefined
+      },
+
+      sortItem: {
+        active: true,
+        // by: "name"
+      },
+      filters: [{
+              title: "Незавершенные",
+              by: "remaining"
+            },
+            {
+              title: "Завершенные",
+              by: "completed"
+            },
+            {
+              title: "Все",
+              by: "all"
+            }
+          ],
+      filterItem: {
+        active: false,
+        // items: 
       }
     }),
     async mounted() {
@@ -85,7 +166,25 @@
     },
  
     methods: {
-       closePopup() {
+      sort() {
+        // value
+        return this.listsWithId.sort(function (a, b) {return (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1;})
+      },
+      filter(value) {
+        if (value == "completed") {
+          let newLists = this.listsWithId.filter(list => list.completed === true)
+          this.$store.commit("SET_LISTS", newLists )
+          newLists = []
+        } else if (value == "remaining") {
+          let newLists = this.listsWithId.filter(list => list.completed === false)
+          this.$store.commit("SET_LISTS", newLists )
+          newLists = []
+        } else {
+          this.$store.commit("SET_LISTS", this.listsWithId )
+        }
+        return this.listsWithId 
+      },
+      closePopup() {
         this.paramsModal.open = false
       },
       openModal(title, id) {

@@ -135,16 +135,13 @@ export default {
         }
       }
       commit("SET_TASKS", tasksFiltered)
-
       commit("SET_COMPLETED", isCompleted)
-      // console.log(tasksFiltered,isCompleted);
       return tasksFiltered
     },
     GET_RAW_TASKS: async ({ dispatch}, listId) => {
       const uid = await dispatch('GET_ID')
       console.log(listId);
       const rawTasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
-      // commit("SET_TASKS", rawTasks) 
       return rawTasks 
     },
 
