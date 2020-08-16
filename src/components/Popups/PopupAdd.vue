@@ -1,4 +1,4 @@
-<template>
+<template v-slot="dialogAdd">
   <v-container>
     <v-row>
       <v-dialog v-model="paramsModal" slot="dialogAdd">

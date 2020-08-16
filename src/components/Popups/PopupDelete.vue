@@ -1,7 +1,7 @@
-<template>
+<template v-slot="dialogDelete">
   <v-container>
     <v-row>
-      <v-dialog v-model="paramsModal" slot="dialogDelete">
+      <v-dialog v-model="paramsModal" >
         <v-card>
           <!-- clean title here -->
           <v-card-title>{{paramsModal}}// Title: {{val}} + id {{listId}}</v-card-title> 
