@@ -2,7 +2,8 @@
     <v-container>
       <v-row>
         <slot name="dialogAdd"></slot>
-        <slot name="dialogDelete"></slot>
+        <!-- <slot name="dialogDelete"></slot> -->
+        
       </v-row>
     </v-container>
 </template>

@@ -65,7 +65,7 @@
 
     </v-navigation-drawer>
 
-    <Popup slot="dialogDelete" v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
+    <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" @deleteList="deleteList(paramsModal.listId)" />
   </div>
 
@@ -73,14 +73,14 @@
 
 <script>
   import NewList from './NewList'
-  import Popup from './Popups/Popup'
+  import PopupDelete from './Popups/PopupDelete'
   import { mapGetters } from 'vuex'
 
   export default {
     name: 'lists',
     components: {
       NewList,
-      Popup
+      PopupDelete
     },
     data: () => ({
       listsWithId: [],
