@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-dialog v-model="paramsModal">
+      <v-dialog v-model="paramsModal" slot="dialogAdd">
         <v-card>
           <v-card-title v-if="!titleList">Задача добавлена</v-card-title>
            <v-card-title v-else>Подзадача добавлена</v-card-title> 

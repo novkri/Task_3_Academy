@@ -21,12 +21,12 @@
       </v-row>
     </v-container>
   </v-form>
-  <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
+  <Popup slot="dialogAdd" v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
 </div>
 </template>
 
 <script>
-import PopupAdd from './Popups/PopupAdd'
+import Popup from './Popups/Popup'
 
   export default {
     name: 'newList',
@@ -43,7 +43,8 @@ import PopupAdd from './Popups/PopupAdd'
       }
     }),
     components: {
-      PopupAdd
+      // PopupAdd,
+      Popup
     },
     methods: {
       submit(title) {

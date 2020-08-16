@@ -6,36 +6,7 @@
       </v-toolbar>
 
       <v-divider></v-divider>
-<!-- items: [{
-          action: "sort",
-          title: "Sort by",
-          active: true,
-          items: [
-            {
-              title: "Name",
-              by: "name"
-            },
-          ]
-        },
-        {
-          action: "filter_list",
-          title: "Filter by",
-          active: false,
-          items: [{
-              title: "Remaining",
-              by: "remaining"
-            },
-            {
-              title: "Completed",
-              by: "completed"
-            },
-            {
-              title: "All",
-              by: "all"
-            }
-          ]
-        }
-      ] -->
+
       <v-list>
         <v-list-group v-model="sortItem.active" prepend-icon="sort" no-action>
           <v-list-item slot="activator">
@@ -94,7 +65,7 @@
 
     </v-navigation-drawer>
 
-    <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
+    <Popup slot="dialogDelete" v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" @deleteList="deleteList(paramsModal.listId)" />
   </div>
 
@@ -102,14 +73,14 @@
 
 <script>
   import NewList from './NewList'
-  import PopupDelete from './Popups/PopupDelete'
+  import Popup from './Popups/Popup'
   import { mapGetters } from 'vuex'
 
   export default {
     name: 'lists',
     components: {
       NewList,
-      PopupDelete
+      Popup
     },
     data: () => ({
       listsWithId: [],
