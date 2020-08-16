@@ -1,4 +1,4 @@
-<template v-slot="dialogAdd">
+<template>
   <v-container>
     <v-row>
       <v-dialog v-model="paramsModal" slot="dialogAdd">
@@ -35,11 +35,6 @@ export default {
     closePopup() {
       this.$emit('closePopup')
     },
-
-    // async deleteList(listId) {
-    //   await this.$emit('deleteList', listId)
-    //   this.$emit('closePopup')
-    // }
   }
 }
 </script>
