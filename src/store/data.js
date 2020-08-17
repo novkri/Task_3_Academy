@@ -134,9 +134,23 @@ export default {
     
     TOGGLE_TASK: async ({dispatch }, { thisListId, taskId, isComplete, title }) => {
       const uid = await dispatch('GET_ID')
+      // console.log(this.$store.getters.TASKS);
       // const t = await dispatch('GET_TASKS', thisListId)
+      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
+      const tasksWithId = Object.keys(tasks).map(key => ({...tasks[key], id: key}))
 
-      console.log(t[taskId].id, thisListId, taskId, isComplete, title); // ... 0 true 12
+      let tasksFiltered = []
+      let isCompleted = []
+      for (let i = 0; i < Object.values(tasksWithId).length; i++) {
+        if (Object.values(tasksWithId)[i].listid == thisListId) {
+          tasksFiltered.push(Object.values(tasksWithId)[i], )
+          if (Object.values(tasksWithId)[i].isComplete) {
+            isCompleted.push(Object.values(tasksWithId)[i].isComplete)
+          }
+        }
+      }
+
+      console.log(tasksWithId[taskId].id, thisListId, taskId, isComplete, title); // ... 0 true 12
       // let thisTaskId = ''
 
       // for (let i = 0; i < Object.keys(t).length; i++) {
@@ -145,7 +159,7 @@ export default {
       //   }
       // }
 
-      await firebase.database().ref(`/users/${uid}/tasks/${t[taskId].id}`).update({isComplete})
+      await firebase.database().ref(`/users/${uid}/tasks/${tasksWithId[taskId].id}`).update({isComplete})
       await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: false})
       // await commit('SET_TASKS', t)
       const t = await dispatch('GET_TASKS', thisListId)
