@@ -151,7 +151,7 @@
  
     methods: {
       sort() {
-        return this.listsWithId.sort(function (a, b) {
+        this.listsWithId.sort(function (a, b) {
           return (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1
         })
       },

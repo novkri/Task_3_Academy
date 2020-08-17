@@ -19,7 +19,9 @@ export default {
     },
 
     TASKS: state => {
-      return state.tasks
+      return state.tasks.sort(function (a, b) {
+        return (new Date(a.date) > new Date(b.date)) ? -1 : 1
+      })
     },
     DONE_TASKS: state => {
       return state.isCompleted
@@ -33,17 +35,15 @@ export default {
     SET_LISTS: (state, payload) => {
       state.lists = payload
     },
-    // ADD_LIST: (state, payload) => {
-    //   console.log(payload);
-    //   state.lists.push(payload)
-    // },
+    ADD_LIST: (state, payload) => {
+      state.lists.push(payload)
+    },
     CLEAR_LISTS: (state) => {
       state.lists = {}
     },
-    // REMOVE_LIST: (state, payload) => {
-    //   console.log("REMOVE_LIST", payload);
-    //   state.lists = state.lists.filter(list => list.id !== payload)
-    // },
+    REMOVE_LIST: (state, payload) => {
+      state.lists = state.lists.filter(list => list.id !== payload)
+    },
 
 
     SET_TASKS: (state, payload) => {
@@ -64,14 +64,6 @@ export default {
     //   state.tasks = state.tasks.filter(task => task.id !== payload)
     // },
 
-    // SET_TASK_STATUS: (state, payload) => {
-    //   let s = state.tasks.filter(task => task.title == payload.title).isComplete = payload.isComplete
-    //   // .filter(t => t.isComplete = isComplete)
-    //   // state.tasks = state.tasks
-    //   console.log(s);
-    //   // state.tasks = payload
-    //   console.log(state.tasks);
-    // },
   },
 
   actions: {
@@ -85,22 +77,23 @@ export default {
 
       return listsWithId
     },
-    async NEW_LIST_POST({dispatch}, {title}) {
+    async NEW_LIST_POST({dispatch, commit}, {title}) {
       try {
           const uid = await dispatch('GET_ID')
           const list = await firebase.database().ref(`/users/${uid}/lists`).push({title})
-          await dispatch('GET_LISTS')
+          await commit('ADD_LIST', {title, id: list.key})
           return {title, id: list.key}
       } catch (e) {
           console.log(e)
           throw e
       }
     },
-    DELETE_LIST: async ({dispatch}, {index}) => {
+    DELETE_LIST: async ({dispatch, commit}, {index}) => {
       console.log(index)
       const uid = await dispatch('GET_ID')
       await firebase.database().ref().child(`/users/${uid}/lists/${index}`).remove()
-      await dispatch('GET_LISTS')
+      // await dispatch('GET_LISTS')
+      await commit('REMOVE_LIST', index)
     },
 
     GET_ALL_TASKS: async ({ dispatch }) => {

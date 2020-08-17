@@ -7,7 +7,7 @@
           <v-checkbox v-model="task.isComplete" color="success" @click="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
           <v-list-item-content>
-            <v-list-item-title>{{ task.title }} {{task}} {{index}} {{task.id}} </v-list-item-title>
+            <v-list-item-title>{{ task.title }} {{task.date}} </v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
@@ -119,16 +119,6 @@
         } catch (error) {
           console.log(error);
         }
-      //   await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
-      //     .then(response => {
-      //       // + перенаправлнеи на lists/ ?
-      //       // this.$router.push({
-      //       //   name: 'task',
-      //       //   params: {taskId: this.$route.params.id}
-      //       // })
-      //       console.log(response, "DELETE_TASK done");
-      //     })
-      //     .catch(error => console.log(error))
       }
   
     }
