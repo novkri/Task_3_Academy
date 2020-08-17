@@ -3,9 +3,7 @@ import firebase from 'firebase/app'
 export default {
   state: {
     newListForm: false,
-
     lists: [],
-
     tasks: [],
     isCompleted: []
   },
@@ -53,16 +51,14 @@ export default {
       state.isCompleted = payload
     },
 
-    // ADD_TASK: (state, { data, listId }) => {
-    //   console.log("ADD_TASK",data, listId);
-    //   // console.log(state.lists.find(list => list.id === 7).title);
-    //   state.tasks.push(data)
-    // },
+    ADD_TASK: (state, payload) => {
+      state.tasks.push(payload)
+    },
 
-    // REMOVE_TASK: (state, payload) => {
-    //   console.log("REMOVE_TASK", payload);
-    //   state.tasks = state.tasks.filter(task => task.id !== payload)
-    // },
+    REMOVE_TASK: (state, payload) => {
+      console.log("REMOVE_TASK",state.tasks, payload);
+      state.tasks = state.tasks.filter(task => task.id !== payload)
+    },
 
   },
 
@@ -92,29 +88,30 @@ export default {
       console.log(index)
       const uid = await dispatch('GET_ID')
       await firebase.database().ref().child(`/users/${uid}/lists/${index}`).remove()
-      // await dispatch('GET_LISTS')
       await commit('REMOVE_LIST', index)
     },
 
-    GET_ALL_TASKS: async ({ dispatch }) => {
-      const uid = await dispatch('GET_ID')
+    // GET_ALL_TASKS: async ({ dispatch }) => {
+    //   const uid = await dispatch('GET_ID')
 
-      let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
-      const tasksWithId = Object.keys(tasks).map(key => ({...tasks[key], id: key}))
-      return tasksWithId
-    }, 
+    //   let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
+    //   const tasksWithId = Object.keys(tasks).map(key => ({...tasks[key], id: key}))
+    //   return tasksWithId
+    // }, 
 
     GET_TASKS: async ({ dispatch, commit}, listId) => {
       const uid = await dispatch('GET_ID')
 
       let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
+      const tasksWithId = Object.keys(tasks).map(key => ({...tasks[key], id: key}))
+
       let tasksFiltered = []
       let isCompleted = []
-      for (let i = 0; i < Object.values(tasks).length; i++) {
-        if (Object.values(tasks)[i].listid == listId) {
-          tasksFiltered.push(Object.values(tasks)[i])
-          if (Object.values(tasks)[i].isComplete) {
-            isCompleted.push(Object.values(tasks)[i].isComplete)
+      for (let i = 0; i < Object.values(tasksWithId).length; i++) {
+        if (Object.values(tasksWithId)[i].listid == listId) {
+          tasksFiltered.push(Object.values(tasksWithId)[i], )
+          if (Object.values(tasksWithId)[i].isComplete) {
+            isCompleted.push(Object.values(tasksWithId)[i].isComplete)
           }
         }
       }
@@ -122,45 +119,30 @@ export default {
       commit("SET_COMPLETED", isCompleted)
       return tasksFiltered
     },
-    GET_RAW_TASKS: async ({ dispatch}) => {
-      const uid = await dispatch('GET_ID')
-      const rawTasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
-      return rawTasks 
-    },
 
-     NEW_POST_TASK: async ({ dispatch}, {listid, title, isUrgent, isComplete, date}) => {
+    // GET_RAW_TASKS: async ({ dispatch}) => {
+    //   const uid = await dispatch('GET_ID')
+    //   const rawTasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
+    //   return rawTasks 
+    // },
+
+     NEW_POST_TASK: async ({ dispatch, commit }, {listid, title, isUrgent, isComplete, date}) => {
       const uid = await dispatch('GET_ID')
       await firebase.database().ref(`/users/${uid}/tasks`).push({listid, title, isUrgent, isComplete, date})
       await firebase.database().ref(`/users/${uid}/lists/${listid}`).update({completed: isComplete})
-      await dispatch('GET_TASKS', listid)
+      await commit('ADD_TASK', {listid, title, isUrgent, isComplete, date})
     },
 
-    DELETE_TASK: async ({dispatch}, {thisListId, index}) => {
+    DELETE_TASK: async ({dispatch, commit }, {thisListId, index}) => {
       console.log("DELETE_TASK",thisListId, index)
-      const uid = await dispatch('GET_ID')
+      const uid =  await dispatch('GET_ID')
       let r = await dispatch('GET_LISTS')
       let listId = r[thisListId].id
-      let t = await dispatch('GET_RAW_TASKS')
 
-      let thisTasks = []
-      for (let i = 0; i < Object.keys(t).length; i++) {
-        if (Object.values(t)[i].listid == listId) {
-          thisTasks.push(Object.keys(t)[i])
-        }
-      }
+      let t = await dispatch('GET_TASKS', listId)
 
-      let thisId = ''
-      for (let i = 0; i < thisTasks.length; i++) {
-        if (i == index) {
-          thisId = thisTasks[i]
-        }
-        
-      }
-
-      await firebase.database().ref().child(`/users/${uid}/tasks/${thisId}`).remove().then(console.log('removes'))
-      await dispatch('GET_TASKS', listId)
-      await firebase.database().ref(`/users/${uid}/lists/${listId}`).update({completed: null})
-      await dispatch('GET_LISTS')
+      await firebase.database().ref().child(`/users/${uid}/tasks/${t[index].id}`).remove()
+      await commit('REMOVE_TASK', t[index].id)
     },
 
     

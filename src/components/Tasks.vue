@@ -72,6 +72,13 @@
         listId: ''
       },
     }),
+    watch: {
+      ...mapGetters(['TASKS']),
+      tasks: function() {
+        console.log('done', this.$store.getters.TASKS);
+      }
+    },
+
     computed: {
       ...mapGetters(['TASKS']),
       
