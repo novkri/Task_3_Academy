@@ -7,7 +7,7 @@
           <v-checkbox v-model="task.isComplete" color="success" @click="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
           <v-list-item-content>
-            <v-list-item-title>{{ task.title }} {{task.date}} </v-list-item-title>
+            <v-list-item-title>{{ task.title }} {{task.isComplete}} </v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
