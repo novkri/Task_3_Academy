@@ -78,6 +78,7 @@ import { mapGetters } from 'vuex';
             minute: '2-digit'
           })
         })
+        await this.$store.dispatch('GET_LISTS')
         this.title = ''
         this.isUrgent = false
       }

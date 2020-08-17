@@ -128,12 +128,12 @@
         console.log(error)
       }
     },
-    watch: {
-      ...mapGetters(['LISTS']),
-      listsWithId: function() {
-        console.log('done', this.$store.getters.LISTS);
-      }
-    },
+    // watch: {
+    //   ...mapGetters(['LISTS']),
+    //   listsWithId: function() {
+    //     console.log('done', this.$store.getters.LISTS);
+    //   }
+    // },
     computed: {
       ...mapGetters(['LISTS']),
       openNewListFormValue: {

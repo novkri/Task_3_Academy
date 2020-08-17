@@ -72,12 +72,12 @@
         listId: ''
       },
     }),
-    watch: {
-      ...mapGetters(['TASKS']),
-      tasks: function() {
-        console.log('done', this.$store.getters.TASKS);
-      }
-    },
+    // watch: {
+    //   ...mapGetters(['TASKS']),
+    //   tasks: function() {
+    //     console.log('done', this.$store.getters.TASKS);
+    //   }
+    // },
 
     computed: {
       ...mapGetters(['TASKS']),
@@ -94,7 +94,7 @@
         console.log(index);
         const thisListId = this.lists[this.$route.params.id].id
         console.log('thisListId', thisListId);
-        this.$store.dispatch("TOGGLE_TASK", {
+        await this.$store.dispatch("TOGGLE_TASK", {
           thisListId,
           taskId: index,
           isComplete: complete,
@@ -104,7 +104,8 @@
           console.log(this.tasks[i].isComplete)
           this.isCompleted.push(this.tasks[i].isComplete)
         }
-        
+
+        await this.$store.dispatch('GET_LISTS')
       },
 
       closePopup() {
@@ -126,6 +127,7 @@
         } catch (error) {
           console.log(error);
         }
+        await this.$store.dispatch('GET_LISTS')
       }
   
     }
