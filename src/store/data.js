@@ -170,6 +170,7 @@ export default {
       await dispatch('GET_LISTS')
     },
 
+    
     TOGGLE_TASK: async ({dispatch}, { thisListId, taskId, isComplete, title }) => {
       const uid = await dispatch('GET_ID')
       const t = await dispatch('GET_RAW_TASKS')
