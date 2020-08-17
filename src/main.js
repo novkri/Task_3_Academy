@@ -17,6 +17,17 @@ Vue.config.productionTip = false
 
 Vue.use(VueRouter)
 
+// Vue.directive('colored', {
+//   bind(el, binding) {
+//     if (binding.value == true) {
+//       el.style.background = '#AED581'
+//     } else if (binding.value == false) {
+//       el.style.background = '#E0E0E0'
+//     } else {
+//       el.style.background = 'white'
+//     }
+//   }
+// })
 
 firebase.initializeApp({
   apiKey: "AIzaSyBPWHOB9CdceFdsd2rEcB5D5XId6uS5iRc",

@@ -4,22 +4,26 @@
 
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
         <v-list-item>
-          <v-checkbox v-model="task.isComplete" color="success" @click.prevent="toggle(index, task.isComplete, task.title)"></v-checkbox>
+          <v-checkbox v-model="task.isComplete" color="success" @click="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
           <v-list-item-content>
-           <!-- {{task.isComplete}} taskid:{{index}} listid: {{task.listid}} -->
-            <v-list-item-title>{{ task.title }}</v-list-item-title>
+            <v-list-item-title>{{ task.title }} {{task}} {{index}} {{task.id}} </v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
           </v-list-item-content>
 
-          <v-icon v-if="task.isUrgent" color="red">info</v-icon>
+          <v-icon v-if="task.isUrgent" color="red">warning</v-icon>
           <v-icon v-else></v-icon>
      
 
           <v-list-item-action>
-            <v-btn icon @click.stop="openModal(task.title, task.id)">
-              <v-icon>delete</v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+              <template v-slot:activator="{on}">
+                <v-btn icon @click.stop="openModal(task.title, task.listid, index)" v-on="on">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Удалить</span>
+            </v-tooltip>
           </v-list-item-action>
           
         </v-list-item>
@@ -37,7 +41,7 @@
     </v-card>
 
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
-      :listId="paramsModal.listId" @deleteList="deleteTask(paramsModal.taskId)" />
+      :listId="paramsModal.listId" :taskId="paramsModal.taskId" @deleteList="deleteList(paramsModal.taskId)" />
 
     <router-view :key="$route.fullPath"></router-view>
   </div>
@@ -75,10 +79,12 @@
     async mounted () {
       this.lists = await this.$store.dispatch("GET_LISTS")
       const thisListId = this.lists[this.$route.params.id].id
-      this.tasks = await this.$store.dispatch("GET_TASKS", thisListId) 
+      this.tasks = await this.$store.dispatch("GET_TASKS", thisListId)
+      console.log(this.tasks, thisListId);
     },
     methods: {
       async toggle(index, complete, title) {
+        console.log(index);
         const thisListId = this.lists[this.$route.params.id].id
         console.log('thisListId', thisListId);
         this.$store.dispatch("TOGGLE_TASK", {
@@ -87,24 +93,32 @@
           isComplete: complete,
           title
         })
-        // console.log(this.tasks);
         for (let i = 0; i < this.tasks.length; i++) {
           console.log(this.tasks[i].isComplete)
           this.isCompleted.push(this.tasks[i].isComplete)
-        }//send to Lists.vue?
+        }
+        
       },
 
       closePopup() {
         this.paramsModal.open = false
       },
-      openModal(title, id) {
+      openModal(title, listid, id) {
+        console.log(id);
         this.paramsModal.title = title 
         this.paramsModal.taskId = id 
+        this.paramsModal.listId = listid
         this.paramsModal.open = true
       },
 
-      // async deleteTask(index) {
-      //   console.log(index);
+      async deleteList(index) {
+        console.log('delete',this.$route.params.id, index)
+        this.paramsModal.open = false
+        try {
+          await this.$store.dispatch("DELETE_TASK", {thisListId: this.$route.params.id, index})
+        } catch (error) {
+          console.log(error);
+        }
       //   await this.$store.dispatch("DELETE_TASK", { listid: this.$route.params.id, index})
       //     .then(response => {
       //       // + перенаправлнеи на lists/ ?
@@ -115,7 +129,8 @@
       //       console.log(response, "DELETE_TASK done");
       //     })
       //     .catch(error => console.log(error))
-      // }
+      }
+  
     }
   }
 </script>

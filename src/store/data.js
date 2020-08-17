@@ -96,23 +96,14 @@ export default {
           throw e
       }
     },
-    // DELETE_LIST: ({ commit }, payload) => {
-    //   console.log(payload)
-    //   return new Promise((resolve, reject) => {
-    //     axios.delete(`http://localhost:3000/lists?id=${payload}`)
-    //     .then(res => {
-    //       console.log("REMOVE_LIST actions", payload);
-    //       commit("REMOVE_LIST",  payload)
-    //       resolve(res)
-          
-    //     })
-    //     .catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
+    DELETE_LIST: async ({dispatch}, {index}) => {
+      console.log(index)
+      const uid = await dispatch('GET_ID')
+      await firebase.database().ref().child(`/users/${uid}/lists/${index}`).remove()
+      await dispatch('GET_LISTS')
+    },
 
-    GET_ALL_TASKS: async ({ dispatch}) => {
+    GET_ALL_TASKS: async ({ dispatch }) => {
       const uid = await dispatch('GET_ID')
 
       let tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
@@ -138,9 +129,8 @@ export default {
       commit("SET_COMPLETED", isCompleted)
       return tasksFiltered
     },
-    GET_RAW_TASKS: async ({ dispatch}, listId) => {
+    GET_RAW_TASKS: async ({ dispatch}) => {
       const uid = await dispatch('GET_ID')
-      console.log(listId);
       const rawTasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).val() || {}
       return rawTasks 
     },
@@ -148,48 +138,66 @@ export default {
      NEW_POST_TASK: async ({ dispatch}, {listid, title, isUrgent, isComplete, date}) => {
       const uid = await dispatch('GET_ID')
       await firebase.database().ref(`/users/${uid}/tasks`).push({listid, title, isUrgent, isComplete, date})
-      dispatch('GET_TASKS', listid)
-
+      await firebase.database().ref(`/users/${uid}/lists/${listid}`).update({completed: isComplete})
+      await dispatch('GET_TASKS', listid)
     },
 
-    // DELETE_TASK: ({ commit }, {listid,index}) => {
-    //   console.log("DELETE_TASK", listid, index)
+    DELETE_TASK: async ({dispatch}, {thisListId, index}) => {
+      console.log("DELETE_TASK",thisListId, index)
+      const uid = await dispatch('GET_ID')
+      let r = await dispatch('GET_LISTS')
+      let listId = r[thisListId].id
+      let t = await dispatch('GET_RAW_TASKS')
 
-    //   return new Promise((resolve, reject) => {
-    //     axios.delete(`http://localhost:3000/tasks/${index}`)
-    //       .then(res => {
-    //         commit("REMOVE_TASK", index)
-    //         resolve(res)
-            
-    //       })
-    //       .catch(error => {
-    //         reject(error)
-    //       })
-    //   })
-    // },
+      let thisTasks = []
+      for (let i = 0; i < Object.keys(t).length; i++) {
+        if (Object.values(t)[i].listid == listId) {
+          thisTasks.push(Object.keys(t)[i])
+        }
+      }
+
+      let thisId = ''
+      for (let i = 0; i < thisTasks.length; i++) {
+        if (i == index) {
+          thisId = thisTasks[i]
+        }
+        
+      }
+
+      await firebase.database().ref().child(`/users/${uid}/tasks/${thisId}`).remove().then(console.log('removes'))
+      await dispatch('GET_TASKS', listId)
+      await firebase.database().ref(`/users/${uid}/lists/${listId}`).update({completed: null})
+      await dispatch('GET_LISTS')
+    },
 
     TOGGLE_TASK: async ({dispatch}, { thisListId, taskId, isComplete, title }) => {
       const uid = await dispatch('GET_ID')
-      const t = await dispatch('GET_RAW_TASKS', thisListId)
+      const t = await dispatch('GET_RAW_TASKS')
+
       console.log(taskId);
       let thisTaskId = ''
-      // let thisTask = {}
 
       for (let i = 0; i < Object.keys(t).length; i++) {
         if (Object.values(t)[i].listid == thisListId && Object.values(t)[i].title == title) {
             thisTaskId =  Object.keys(t)[i]
-            // thisTask = Object.values(t)[i]
         }
       }
-      // commit("SET_TASK_STATUS", {
-      //   taskId,
-      //   isComplete,
-      //   thisListId,
-      //   title
-      // })
 
       await firebase.database().ref(`/users/${uid}/tasks/${thisTaskId}`).update({isComplete})
-      await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: isComplete})
+      await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: false})
+
+      let x = await dispatch('GET_TASKS', thisListId)
+      let arrCompleted = []
+      for (let i = 0; i < x.length; i++) {
+        if (x[i].isComplete == true) {
+          arrCompleted.push(x[i].isComplete)
+        }
+      }
+
+      if (arrCompleted.length == x.length) {
+        await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: true})
+      }
+      await dispatch('GET_LISTS')
     }
   }
 }

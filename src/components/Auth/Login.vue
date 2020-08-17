@@ -1,37 +1,43 @@
 <template>
-<div>
-  <!-- <v-card v-if="error">{{error}}</v-card> -->
+<div >
   <v-snackbar v-model="error" v-if="error">
     {{ error }} 
   </v-snackbar>
-  <v-card class="mx-auto mt-6" style="max-width: 500px;">
-      <v-toolbar color="grey darken-3" cards dark flat>
-        <v-card-title>Логин</v-card-title>
-      </v-toolbar>
-      
-      <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
-        <v-text-field v-model="email" :rules="[rules.email, rules.required]" filled label="Email"
-          type="email"></v-text-field>
 
-        <!-- type="password" -->
-        <v-text-field v-model="password" :rules="[rules.required, rules.length(6)]" filled
-          min="6" label="Пароль" type="text"></v-text-field>
-      
-      <v-divider></v-divider>
-      <!-- <v-card-actions> -->
-        <v-btn :disabled="!form" class="success" depressed @click="submitHandler" type="submit">Войти
-        </v-btn>
-        <!-- <v-spacer></v-spacer> -->
-        <div class="text--primary">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></div>
-      <!-- </v-card-actions> --></v-form>
-    </v-card>
+  <v-container>
+    <v-row>
+      <v-col sm6 xs6>
+        <v-card class="mx-auto mt-6" style="max-width: 500px;">
+          <v-toolbar color="grey darken-3" cards dark flat>
+            <v-card-title>Логин</v-card-title>
+          </v-toolbar>
+          
+          <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
+            <v-text-field v-model="email" :rules="[rules.email, rules.required]" filled label="Email"
+              type="email"></v-text-field>
+
+            <!-- type="password" -->
+            <v-text-field v-model="password" :rules="[rules.required, rules.length(6)]" filled
+              min="6" label="Пароль" type="text"></v-text-field>
+          
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn :disabled="!form" class="success" depressed @click.prevent="submitHandler" type="submit">Войти
+              </v-btn>
+              <v-spacer></v-spacer>
+              <div class="text--primary">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></div>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+  
 </div>
     
 </template>
 
 <script>
-  import firebase from 'firebase/app'
-
   export default {
     name: 'login',
     data: () => ({
@@ -53,10 +59,9 @@
             email: this.email,
             password: this.password
           }
-          console.log(formData);
           try {
-            console.log(this.$route.name);
-            await firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
+            await this.$store.dispatch('LOGIN', formData)
+
             this.$router.push('/').catch(err => {
                 if (
                   err.name !== 'NavigationDuplicated' &&
@@ -68,11 +73,9 @@
             } catch (error) {
               // code: "auth/user-not-found", code: "auth/invalid-email",
               error.code == "auth/invalid-email" ? this.error = 'Некорректный email' : this.error = 'Такого пользователя не существует'
-              // this.error = error
             }
         }
       },
-
     }
   }
 </script>

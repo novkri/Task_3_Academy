@@ -65,7 +65,7 @@ import { mapGetters } from 'vuex';
       async closePopup() {
         this.paramsAddModal.open = false
 
-        const task = await this.$store.dispatch("NEW_POST_TASK", {
+        await this.$store.dispatch("NEW_POST_TASK", {
           listid: this.paramsAddModal.listId,
           title: this.title,
           isUrgent: this.isUrgent,
@@ -80,7 +80,6 @@ import { mapGetters } from 'vuex';
         })
         this.title = ''
         this.isUrgent = false
-        console.log(task);
       }
     }
   }

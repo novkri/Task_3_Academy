@@ -10,11 +10,13 @@ import firebase from 'firebase/app'
 const routes = [
     {
       path: '/',
+      // components: () => import('../components/Todo'),
       component: Todo,
       name: 'todo',
       children: [
         {
           path: '/list/:id',
+          
           components: { tasks: Tasks},
           name: 'tasks',
           children: [
@@ -29,11 +31,13 @@ const routes = [
     }, 
     {
     path: '/login',
+    // components: () => import('../components/Auth/Login'),
     component: Login,
     name: 'login'
     },
     {
       path: '/register',
+      // components: () => import('../components/Auth/Register'),
       component: Register,
       name: 'register'
     }

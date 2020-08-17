@@ -7,6 +7,8 @@
 
       <v-divider></v-divider>
 
+      <!-- <v-btn @click.prevent="sort"><v-icon>sort</v-icon>Сортировать по имени</v-btn> -->
+
       <v-list>
         <v-list-group v-model="sortItem.active" prepend-icon="sort" no-action>
           <v-list-item slot="activator">
@@ -15,7 +17,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click.prevent="sort" active-class> <!-- "sort(sortItem.by)" -->
+          <v-list-item @click.prevent="sort" active-class>
             <v-list-item-content>
               <v-list-item-title>Имени</v-list-item-title>
             </v-list-item-content>
@@ -37,16 +39,23 @@
           </v-list-item>
         </v-list-group>
 
-
-        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)" :style="{'background-color': list.completed == null? 'white' : list.completed ? 'green' : 'grey'}">
+<!--  v-colored="list.completed" -->
+        <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)"
+        :style="{'background-color': list.completed == null ? 'white' : list.completed ? '#AED581' : '#E0E0E0'}" v-model="listsWithId.completed">
           <v-list-item-action>
-            <v-btn icon @click.stop="openModal(list.title, list.id)">
-              <v-icon>delete</v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+              <template v-slot:activator="{on}">
+                <v-btn icon @click.stop="openModal(list.title, list.id)" v-on="on">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Удалить задачу</span>
+            </v-tooltip>
+            
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title >{{ list.title }}</v-list-item-title>
+            <v-list-item-title >{{ list.title }} {{list.completed}} </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         
@@ -93,8 +102,7 @@
       },
 
       sortItem: {
-        active: true,
-        // by: "name"
+        active: false,
       },
       filters: [{
               title: "Незавершенные",
@@ -111,18 +119,23 @@
           ],
       filterItem: {
         active: false,
-        // items: 
       }
     }),
     async mounted() {
-      console.log('mounted hook');
-      this.listsWithId = await this.$store.dispatch('GET_LISTS')
+      try {
+        this.listsWithId = await this.$store.dispatch('GET_LISTS')
+      } catch (error) {
+        console.log(error)
+      }
     },
-
+    watch: {
+      ...mapGetters(['LISTS']),
+      listsWithId: function() {
+        console.log('done', this.$store.getters.LISTS);
+      }
+    },
     computed: {
       ...mapGetters(['LISTS']),
-
-
       openNewListFormValue: {
         get() {
           return this.$store.getters.NEW_LIST_FORM
@@ -138,8 +151,9 @@
  
     methods: {
       sort() {
-        // value
-        return this.listsWithId.sort(function (a, b) {return (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1;})
+        return this.listsWithId.sort(function (a, b) {
+          return (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1
+        })
       },
       filter(value) {
         if (value == "completed") {
@@ -165,37 +179,38 @@
       },
 
       async toggle(idx) {
-        console.log("toggle",idx)
-        await this.$store.dispatch("GET_TASKS", idx)
- 
-        
-        this.$router.push({
-            name: 'tasks',
-            params: {
-              id: idx
-            }
-          })
-          .catch(err => {
-            if (
-              err.name !== 'NavigationDuplicated' &&
-              !err.message.includes('Avoided redundant navigation to current location')
-            ) {
-              console.error(err)
-            }
-          })
+        if (idx !== this.$route.params.id) {
+          await this.$store.dispatch("GET_TASKS", idx)
+          this.$router.push({
+          name: 'tasks',
+          params: {
+            id: idx
+          }
+        })
+        .catch(err => {
+          if (
+            err.name !== 'NavigationDuplicated' &&
+            !err.message.includes('Avoided redundant navigation to current location')
+          ) {
+            console.error(err)
+          }
+        })
+        }
       },
 
       openNewListForm() {
         this.$store.commit("SET_NEW_LIST_FORM", true)
       },
 
-      // async deleteList(index) {
-      //   await this.$store.dispatch("DELETE_LIST", index)
-      //     .then(response => {
-      //         console.log(response, "DELETE_LIST done");
-      //       })
-      //     .catch(error => console.log(error))
-      // },
+      async deleteList(index) {
+        console.log('delete', index)
+        this.paramsModal.open = false
+        try {
+          await this.$store.dispatch("DELETE_LIST", {index})
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }
   }
 </script>
