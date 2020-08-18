@@ -42,12 +42,29 @@ export default {
     REMOVE_LIST: (state, payload) => {
       state.lists = state.lists.filter(list => list.id !== payload)
     },
-    // SET_LIST_STATUS: (state, thisListId) => {
-    //   console.log(state, thisListId);
-    //   // .find(list => list.id == thisListId).completed = completed
-    //   // return state.lists
-    // },
+    SORT: (state) => {
+      state.lists = state.lists.sort(function (a, b) {
+        return (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1
+      })
+    },
+    // FILTER: (state, payload) => {
 
+      // if (payload == "completed") {
+      //   state.lists = state.lists.find(list => list.completed === true)
+ 
+      //   // oldState = []
+      // } else if (payload == "remaining") {
+      //   state.lists = state.lists.find(list => list.completed === false)
+
+      //   // oldState = []
+      // } else {
+      //   state.lists
+      //   // this.$store.commit("SET_LISTS", this.listsWithId )
+      // }
+      // console.log(state.lists);
+      // // state.lists = oldState
+      // return state.lists
+    // },
 
     SET_TASKS: (state, payload) => {
       state.tasks = payload
@@ -83,6 +100,7 @@ export default {
           const uid = await dispatch('GET_ID')
           const list = await firebase.database().ref(`/users/${uid}/lists`).push({title})
           await commit('ADD_LIST', {title, id: list.key})
+          await dispatch("GET_LISTS")
           return {title, id: list.key}
       } catch (e) {
           console.log(e)

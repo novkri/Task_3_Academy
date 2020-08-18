@@ -52,9 +52,14 @@ import PopupAdd from './Popups/PopupAdd'
       },
       async closePopup() {
         this.paramsAddModal.open = false
-        const list = await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
+        try {
+          await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
+          
+        } catch (error) {
+          console.log('Не удалось добавить задачу', error)
+        }
+        
         this.title = ''
-        console.log(list);
         this.$store.commit("SET_NEW_LIST_FORM", false)
       }
     }

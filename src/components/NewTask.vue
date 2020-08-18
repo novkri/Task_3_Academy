@@ -65,19 +65,24 @@ import { mapGetters } from 'vuex';
       async closePopup() {
         this.paramsAddModal.open = false
 
-        await this.$store.dispatch("NEW_POST_TASK", {
-          listid: this.paramsAddModal.listId,
-          title: this.title,
-          isUrgent: this.isUrgent,
-          isComplete: false,
-          date: new Date().toLocaleString([], {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+        try {
+          await this.$store.dispatch("NEW_POST_TASK", {
+            listid: this.paramsAddModal.listId,
+            title: this.title,
+            isUrgent: this.isUrgent,
+            isComplete: false,
+            date: new Date().toLocaleString([], {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
           })
-        })
+        } catch (error) {
+          console.log('Не удалось добавить задачу', error)
+        }
+        
         await this.$store.dispatch('GET_LISTS')
         this.title = ''
         this.isUrgent = false

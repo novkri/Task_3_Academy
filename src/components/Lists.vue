@@ -17,7 +17,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click.prevent="sort" active-class>
+          <v-list-item @click="sort" active-class>
             <v-list-item-content>
               <v-list-item-title>Имени</v-list-item-title>
             </v-list-item-content>
@@ -55,7 +55,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title >{{ list.title }} {{list.completed}} </v-list-item-title>
+            <v-list-item-title >{{ list.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         
@@ -151,26 +151,28 @@
  
     methods: {
       sort() {
-        this.listsWithId.sort(function (a, b) {
-          return (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1
-        })
+        this.$store.commit('SORT')
       },
-      filter(value) {
+      async filter(value) {
+        // this.$store.commit('FILTER', value)
+        this.listsWithId = await this.$store.dispatch('GET_LISTS')
         if (value == "completed") {
           let newLists = this.listsWithId.filter(list => list.completed === true)
           this.$store.commit("SET_LISTS", newLists )
-          newLists = []
+          // newLists = []
         } else if (value == "remaining") {
           let newLists = this.listsWithId.filter(list => list.completed === false)
           this.$store.commit("SET_LISTS", newLists )
-          newLists = []
+          // newLists = []
         } else {
           this.$store.commit("SET_LISTS", this.listsWithId )
         }
+        // newLists = []
         return this.listsWithId 
       },
-      closePopup() {
+      async closePopup() {
         this.paramsModal.open = false
+        this.listsWithId = await this.$store.dispatch('GET_LISTS')
       },
       openModal(title, id) {
         this.paramsModal.title = title

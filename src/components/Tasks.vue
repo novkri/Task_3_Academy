@@ -1,5 +1,8 @@
 <template>
   <div>
+    <v-toolbar dark>
+        <v-toolbar-title>Подзадачи</v-toolbar-title>
+      </v-toolbar>
     <v-card style="height: 100%; overflow: hidden;">
 
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
@@ -72,12 +75,12 @@
         listId: ''
       },
     }),
-    // watch: {
-    //   ...mapGetters(['TASKS']),
-    //   tasks: function() {
-    //     console.log('done', this.$store.getters.TASKS);
-    //   }
-    // },
+    watch: {
+      ...mapGetters(['TASKS']),
+      tasks: function() {
+        console.log('done', this.$store.getters.TASKS);
+      }
+    },
 
     computed: {
       ...mapGetters(['TASKS']),

@@ -1,15 +1,13 @@
 <template>
-<div >
-  <v-snackbar v-model="error" v-if="error">
-    {{ error }} 
-  </v-snackbar>
-
+<div>
+  <!-- <div v-if=""></div> -->
+  
   <v-container>
     <v-row>
       <v-col sm6 xs6>
         <v-card class="mx-auto mt-6" style="max-width: 500px;">
           <v-toolbar color="grey darken-3" cards dark flat>
-            <v-card-title>Логин</v-card-title>
+            <v-card-title>Логин </v-card-title>
           </v-toolbar>
           
           <v-form ref="form" v-model="form" class="pa-4 pt-6" @submit.prevent="submitHandler">
@@ -32,7 +30,9 @@
       </v-col>
     </v-row>
   </v-container>
-  
+    <v-snackbar v-model="error" v-if="error">
+    {{ error }} 
+  </v-snackbar>
 </div>
     
 </template>
@@ -52,6 +52,9 @@
       },
       error: ''
     }),
+    // mounted: {
+    //   console.log();
+    // },
     methods: {
       async submitHandler() {
         if (this.email && this.password) {
@@ -62,14 +65,15 @@
           try {
             await this.$store.dispatch('LOGIN', formData)
 
-            this.$router.push('/').catch(err => {
+            this.$router.push('/')
+            .catch(err => {
                 if (
                   err.name !== 'NavigationDuplicated' &&
                   !err.message.includes('Avoided redundant navigation to current location')
                 ) {
                   console.error(err)
                 }
-              });
+              })
             } catch (error) {
               // code: "auth/user-not-found", code: "auth/invalid-email",
               error.code == "auth/invalid-email" ? this.error = 'Некорректный email' : this.error = 'Такого пользователя не существует'

@@ -37,7 +37,6 @@ export default {
   data: () => ({
     paramsModal: {
       open: true,
-      // title: '' // probably dont nned it anymore
     }
   }),
   methods: {
