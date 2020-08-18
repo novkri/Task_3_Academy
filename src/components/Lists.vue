@@ -74,6 +74,10 @@
 
     </v-navigation-drawer>
 
+    <v-snackbar v-model="error" v-if="error">
+      {{ error }} 
+    </v-snackbar>
+
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" @deleteList="deleteList(paramsModal.listId)" />
   </div>
@@ -95,6 +99,7 @@
       listsWithId: [],
       isCompleted: [],
       tasks: [],
+      error: '',
       paramsModal: {
         open: false,
         title: '',
@@ -154,20 +159,16 @@
         this.$store.commit('SORT')
       },
       async filter(value) {
-        // this.$store.commit('FILTER', value)
         this.listsWithId = await this.$store.dispatch('GET_LISTS')
         if (value == "completed") {
           let newLists = this.listsWithId.filter(list => list.completed === true)
           this.$store.commit("SET_LISTS", newLists )
-          // newLists = []
         } else if (value == "remaining") {
           let newLists = this.listsWithId.filter(list => list.completed === false)
           this.$store.commit("SET_LISTS", newLists )
-          // newLists = []
         } else {
           this.$store.commit("SET_LISTS", this.listsWithId )
         }
-        // newLists = []
         return this.listsWithId 
       },
       async closePopup() {
@@ -210,7 +211,7 @@
         try {
           await this.$store.dispatch("DELETE_LIST", {index})
         } catch (error) {
-          console.log(error);
+          this.error = 'Не удалось удалить задачу'
         }
       },
     }

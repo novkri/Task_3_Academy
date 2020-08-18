@@ -21,6 +21,11 @@
       </v-row>
     </v-container>
   </v-form>
+
+  <v-snackbar v-model="error" v-if="error">
+    {{ error }} 
+  </v-snackbar>
+
   <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
 </div>
 </template>
@@ -32,6 +37,7 @@ import PopupAdd from './Popups/PopupAdd'
     name: 'newList',
     data: () => ({
       title: '',
+      error: '',
       rules: {
         required: value => !!value || "Required",
       },
@@ -56,7 +62,7 @@ import PopupAdd from './Popups/PopupAdd'
           await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
           
         } catch (error) {
-          console.log('Не удалось добавить задачу', error)
+          this.error = 'Не удалось добавить задачу'
         }
         
         this.title = ''

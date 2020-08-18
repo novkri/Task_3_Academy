@@ -1,7 +1,5 @@
 <template>
 <div>
-  <!-- <div v-if=""></div> -->
-  
   <v-container>
     <v-row>
       <v-col sm6 xs6>
@@ -20,7 +18,7 @@
           
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn :disabled="!form" class="success" depressed @click.prevent="submitHandler" type="submit">Войти
+              <v-btn :disabled="!form" class="success" depressed @click="submitHandler" type="submit">Войти
               </v-btn>
               <v-spacer></v-spacer>
               <div class="text--primary">Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></div>
@@ -31,8 +29,8 @@
     </v-row>
   </v-container>
     <v-snackbar v-model="error" v-if="error">
-    {{ error }} 
-  </v-snackbar>
+      {{ error }} 
+    </v-snackbar>
 </div>
     
 </template>
@@ -52,9 +50,7 @@
       },
       error: ''
     }),
-    // mounted: {
-    //   console.log();
-    // },
+
     methods: {
       async submitHandler() {
         if (this.email && this.password) {

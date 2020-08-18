@@ -16,11 +16,15 @@
           </v-col>
 
           <v-col cols="12" lg="2">
-            <v-checkbox v-model="isUrgent" color="red" label="Срочно"></v-checkbox>
+            <v-checkbox v-model="isUrgent" color="red" label="Срочно" style="margin: 0;"></v-checkbox>
           </v-col>
         </v-row>
       </v-container>
     </v-form>
+
+    <v-snackbar v-model="error" v-if="error">
+      {{ error }} 
+    </v-snackbar>
 
     <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal"
       :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList" :listId="paramsAddModal.listId"/>
@@ -37,7 +41,7 @@ import { mapGetters } from 'vuex';
     data: () => ({
       title: '',
       isUrgent: false,
-
+      error: '',
       paramsAddModal: {
         open: false,
         titleTask: '',
@@ -80,7 +84,7 @@ import { mapGetters } from 'vuex';
             })
           })
         } catch (error) {
-          console.log('Не удалось добавить задачу', error)
+          this.error = 'Не удалось добавить задачу'
         }
         
         await this.$store.dispatch('GET_LISTS')

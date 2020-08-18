@@ -43,6 +43,10 @@
       </v-card-actions>
     </v-card>
 
+    <v-snackbar v-model="error" v-if="error">
+      {{ error }} 
+    </v-snackbar>
+
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" :taskId="paramsModal.taskId" @deleteList="deleteList(paramsModal.taskId)" />
 
@@ -68,6 +72,7 @@
       lists: [],
       tasks: [],
       isCompleted: [],
+      error: '',
       paramsModal: {
         open: false,
         title: '',
@@ -83,8 +88,7 @@
     },
 
     computed: {
-      ...mapGetters(['TASKS']),
-      
+      ...mapGetters(['TASKS']), 
     },
     async mounted () {
       this.lists = await this.$store.dispatch("GET_LISTS")
@@ -94,20 +98,22 @@
     },
     methods: {
       async toggle(index, complete, title) {
-        console.log(index);
         const thisListId = this.lists[this.$route.params.id].id
-        console.log('thisListId', thisListId);
-        await this.$store.dispatch("TOGGLE_TASK", {
-          thisListId,
-          taskId: index,
-          isComplete: complete,
-          title
-        })
-        for (let i = 0; i < this.tasks.length; i++) {
-          console.log(this.tasks[i].isComplete)
-          this.isCompleted.push(this.tasks[i].isComplete)
+        try {
+          await this.$store.dispatch("TOGGLE_TASK", {
+            thisListId,
+            taskId: index,
+            isComplete: complete,
+            title
+          })
+          for (let i = 0; i < this.tasks.length; i++) {
+            console.log(this.tasks[i].isComplete)
+            this.isCompleted.push(this.tasks[i].isComplete)
+          }
+        } catch (error) {
+          this.error = 'Неудалось отметить подзадачу'
         }
-
+        
         await this.$store.dispatch('GET_LISTS')
       },
 
@@ -115,7 +121,6 @@
         this.paramsModal.open = false
       },
       openModal(title, listid, id) {
-        console.log(id);
         this.paramsModal.title = title 
         this.paramsModal.taskId = id 
         this.paramsModal.listId = listid
@@ -128,7 +133,7 @@
         try {
           await this.$store.dispatch("DELETE_TASK", {thisListId: this.$route.params.id, index})
         } catch (error) {
-          console.log(error);
+          this.error = 'Неудалось удалить подзадачу'
         }
         await this.$store.dispatch('GET_LISTS')
       }

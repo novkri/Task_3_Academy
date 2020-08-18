@@ -22,6 +22,8 @@
       </v-col>
 
       <v-col lg8 sm12 xs12 wrap>
+        <span v-if="this.$route.path === '/'">Вы можете добавить подзадачи к задаче, кликнув по ней в списке</span>
+        
         <router-view name="tasks" :key="$route.fullPath"></router-view>
       </v-col>
     </v-row>
@@ -31,7 +33,6 @@
 </template>
 
 <script>
-// import Lists from './Lists'
 
   export default {
     name: "todo",
