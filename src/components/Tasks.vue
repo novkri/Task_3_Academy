@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar dark>
-        <v-toolbar-title>Подзадачи</v-toolbar-title>
+        <v-toolbar-title>Подзадачи в {{ thisListTitle }} </v-toolbar-title>
       </v-toolbar>
     <v-card style="height: 100%; overflow: hidden;">
 
@@ -73,6 +73,7 @@
       tasks: [],
       isCompleted: [],
       error: '',
+      thisListTitle: '',
       paramsModal: {
         open: false,
         title: '',
@@ -95,7 +96,7 @@
       this.lists = await this.$store.dispatch("GET_LISTS")
       const thisListId = this.lists[this.$route.params.id].id
       this.tasks = await this.$store.dispatch("GET_TASKS", thisListId)
-      console.log(this.tasks, thisListId);
+      this.thisListTitle = this.lists[this.$route.params.id].title
     },
     methods: {
       async toggle(index, complete, title) {

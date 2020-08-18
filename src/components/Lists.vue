@@ -175,6 +175,7 @@
       async closePopup() {
         this.paramsModal.open = false
         this.listsWithId = await this.$store.dispatch('GET_LISTS')
+
       },
       openModal(title, id) {
         this.paramsModal.title = title

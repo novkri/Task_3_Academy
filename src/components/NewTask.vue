@@ -26,8 +26,8 @@
       {{ error }} 
     </v-snackbar>
 
-    <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal"
-      :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList" :listId="paramsAddModal.listId"/>
+    <PopupAdd v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal"
+      :titleTask="paramsModal.titleTask" :titleList="paramsModal.titleList" :listId="paramsModal.listId"/>
 
   </div>
 </template>
@@ -42,7 +42,7 @@ import { mapGetters } from 'vuex';
       title: '',
       isUrgent: false,
       error: '',
-      paramsAddModal: {
+      paramsModal: {
         open: false,
         titleTask: '',
         titleList: '',
@@ -60,18 +60,18 @@ import { mapGetters } from 'vuex';
       async submit(title) {
         this.lists = await this.$store.dispatch("GET_LISTS")
       
-        this.paramsAddModal.listId = this.lists[this.$route.params.id].id
-        this.paramsAddModal.titleTask = title
-        this.paramsAddModal.titleList = this.lists[this.$route.params.id].title
-        this.paramsAddModal.open = true
+        this.paramsModal.listId = this.lists[this.$route.params.id].id
+        this.paramsModal.titleTask = title
+        this.paramsModal.titleList = this.lists[this.$route.params.id].title
+        this.paramsModal.open = true
       },
 
       async closePopup() {
-        this.paramsAddModal.open = false
+        this.paramsModal.open = false
 
         try {
           await this.$store.dispatch("NEW_POST_TASK", {
-            listid: this.paramsAddModal.listId,
+            listid: this.paramsModal.listId,
             title: this.title,
             isUrgent: this.isUrgent,
             isComplete: false,

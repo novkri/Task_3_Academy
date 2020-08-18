@@ -15,8 +15,6 @@
         </v-col>
 
         <v-col cols="12" lg="2">
-          <!-- v-model="isUrgent" -->
-          <!-- <v-checkbox color="red" label="Срочно"></v-checkbox> -->
         </v-col>
       </v-row>
     </v-container>
@@ -26,7 +24,7 @@
     {{ error }} 
   </v-snackbar>
 
-  <PopupAdd v-if="paramsAddModal.open" @closePopup="closePopup" v-model="paramsAddModal" :titleTask="paramsAddModal.titleTask" :titleList="paramsAddModal.titleList"/>
+  <PopupAdd v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :titleTask="paramsModal.titleTask" :titleList="paramsModal.titleList"/>
 </div>
 </template>
 
@@ -42,7 +40,7 @@ import PopupAdd from './Popups/PopupAdd'
         required: value => !!value || "Required",
       },
 
-      paramsAddModal: {
+      paramsModal: {
         open: false,
         titleTask: '',
         titleList: ''
@@ -53,11 +51,11 @@ import PopupAdd from './Popups/PopupAdd'
     },
     methods: {
       submit(title) {
-        this.paramsAddModal.titleTask = title
-        this.paramsAddModal.open = true
+        this.paramsModal.titleTask = title
+        this.paramsModal.open = true
       },
       async closePopup() {
-        this.paramsAddModal.open = false
+        this.paramsModal.open = false
         try {
           await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
           

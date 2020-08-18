@@ -3,22 +3,19 @@
     <v-row >
       <v-dialog v-model="paramsModal" width="500">
         <v-card >
-          <!-- clean title here -->
-          <v-card-title>Title: {{val}} <v-spacer></v-spacer> <v-btn @click="closePopup"><v-icon>close</v-icon></v-btn></v-card-title> 
-          <!-- + title for lists -->
-          <!-- <v-card-title v-if="!titleList">Задача добавлена <v-spacer></v-spacer> <v-btn @click="closePopup"><v-icon>close</v-icon></v-btn></v-card-title>
-          <v-card-title v-else>Подзадача добавлена <v-spacer></v-spacer> &times;</v-card-title> -->
+          <v-card-title v-if="taskId == undefined">Удалить задачу? <v-spacer></v-spacer> <v-btn @click="closePopup"><v-icon>close</v-icon></v-btn></v-card-title> 
+          <v-card-title v-else>Удалить подзадачу? <v-spacer></v-spacer> <v-btn @click="closePopup"><v-icon>close</v-icon></v-btn></v-card-title> 
 
           <v-card-text>
             <v-container>
-              Удалить дело "{{val}}"? {{taskId}}, {{listId}}
+              Удалить дело "{{val}}"?
             </v-container>
 
             <v-card-actions>
               <v-row>
-                <v-btn color="red" dark @click="deleteList">da</v-btn>
+                <v-btn color="red" dark @click="deleteList">Да</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click="closePopup" color="success" dark>net</v-btn>
+                <v-btn @click="closePopup" color="success" dark>Нет</v-btn>
               </v-row>
             </v-card-actions>
             
@@ -47,6 +44,7 @@ export default {
 
     async deleteList(taskId) {
       await this.$emit('deleteList', taskId)
+      this.$router.push('/')
       this.$emit('closePopup')
     }
   }
