@@ -126,7 +126,8 @@
         active: false,
       }
     }),
-    async mounted() {
+    // mounted
+    async created() {
       try {
         this.listsWithId = await this.$store.dispatch('GET_LISTS')
       } catch (error) {
