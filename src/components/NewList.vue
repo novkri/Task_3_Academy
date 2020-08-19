@@ -50,9 +50,21 @@ import PopupAdd from './Popups/PopupAdd'
       PopupAdd
     },
     methods: {
-      submit(title) {
+      async submit(title) {
         this.paramsModal.titleTask = title
-        this.paramsModal.open = true
+        // this.paramsModal.open = true
+        let t = await this.$store.dispatch('GET_LISTS')
+        for (let i = 0; i < t.length; i++) {
+          if (Object.values(t)[i].title == this.title) {
+            console.log('got one')
+            this.error = 'Задача с таким именем уже существует'
+            this.paramsModal.open = false
+          }
+          else {
+            this.paramsModal.open = true
+          }
+        }
+
       },
       async closePopup() {
         this.paramsModal.open = false
