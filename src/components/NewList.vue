@@ -3,13 +3,18 @@
    <v-form @submit.prevent="submit(title)">
     <v-container>
       <v-row>
-        <v-col cols="12" lg="7">
-          <v-text-field v-model="title" solo label="Добавить новую задачу" append-icon="add" placeholder="Название">
+        <v-col cols="12" lg="6">
+          <v-text-field v-model="title" solo label="Добавить новую задачу" placeholder="Название">
+          </v-text-field>
+        </v-col>
+
+        <v-col cols="12" lg="6">
+          <v-text-field v-model="tags" solo label="Тэг" placeholder="Тэги через запятую">
           </v-text-field>
         </v-col>
 
         <v-col cols="12" lg="3">
-          <v-btn :disabled="!title" color="success" class="mr-4" @click="submit(title)">
+          <v-btn :disabled="!title" color="success" class="mr-4" @click="submit(title, tags)">
             <v-icon>add</v-icon> Добавить
           </v-btn>
         </v-col>
@@ -35,6 +40,7 @@ import PopupAdd from './Popups/PopupAdd'
     name: 'newList',
     data: () => ({
       title: '',
+      tags: [],
       error: '',
       rules: {
         required: value => !!value || "Required",
@@ -43,16 +49,19 @@ import PopupAdd from './Popups/PopupAdd'
       paramsModal: {
         open: false,
         titleTask: '',
-        titleList: ''
+        titleList: '',
+        tags: []
       }
     }),
     components: {
       PopupAdd
     },
     methods: {
-      async submit(title) {
+      async submit(title, tags) {
+        console.log(title, tags);
         this.paramsModal.titleTask = title
-        // this.paramsModal.open = true
+        this.paramsModal.tags = tags.split(",")
+
         let t = await this.$store.dispatch('GET_LISTS')
         for (let i = 0; i < t.length; i++) {
           if (Object.values(t)[i].title == this.title) {
@@ -69,13 +78,14 @@ import PopupAdd from './Popups/PopupAdd'
       async closePopup() {
         this.paramsModal.open = false
         try {
-          await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim()})
+          await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim(), tags: this.tags.split(",")})
           
         } catch (error) {
           this.error = 'Не удалось добавить задачу'
         }
         
         this.title = ''
+        this.tags = []
         this.$store.commit("SET_NEW_LIST_FORM", false)
       }
     }

@@ -3,9 +3,17 @@
     <v-toolbar dark>
         <v-toolbar-title>Подзадачи в {{ thisListTitle }} </v-toolbar-title>
       </v-toolbar>
+
     <v-card style="height: 100%; overflow: hidden;">
+      <v-list>
+        <v-list-item>
+          <v-text-field v-model="search" solo label="search" append-icon="clear" @click:append="clearSearch" placeholder="Поиск по названию" @keyup.enter="searchTask(search)">
+          </v-text-field>
+        </v-list-item>
+      </v-list>
 
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
+
         <v-list-item>
           <v-checkbox v-model="task.isComplete" color="success" @click="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
@@ -71,6 +79,7 @@
     data: () => ({
       lists: [],
       tasks: [],
+      search: '',
       isCompleted: [],
       error: '',
       thisListTitle: '',
@@ -99,6 +108,17 @@
       this.thisListTitle = this.lists[this.$route.params.id].title
     },
     methods: {
+      async searchTask(title) {
+        let newTask = this.tasks.filter(task => task.title === title)
+        console.log(title, newTask);
+        this.$store.commit("SET_TASKS", newTask)
+        
+      },
+      clearSearch() {
+        this.search = ''
+        this.$store.commit("SET_TASKS", this.tasks )
+      },
+
       async toggle(index, complete, title) {
         const thisListId = this.lists[this.$route.params.id].id
         try {

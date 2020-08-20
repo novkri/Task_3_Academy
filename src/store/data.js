@@ -52,9 +52,6 @@ export default {
     SET_TASKS: (state, payload) => {
       state.tasks = payload
     },
-    // SET_COMPLETED: (state, payload) => {
-    //   state.isCompleted = payload
-    // },
 
     ADD_TASK: (state, payload) => {
       state.tasks.push(payload)
@@ -78,13 +75,13 @@ export default {
 
       return listsWithId
     },
-    async NEW_LIST_POST({dispatch, commit}, {title}) {
+    async NEW_LIST_POST({dispatch, commit}, {title, tags}) {
       try {
           const uid = await dispatch('GET_ID')
-          const list = await firebase.database().ref(`/users/${uid}/lists`).push({title})
-          await commit('ADD_LIST', {title, id: list.key})
+          const list = await firebase.database().ref(`/users/${uid}/lists`).push({title, tags})
+          await commit('ADD_LIST', {title, tags, id: list.key})
           await dispatch("GET_LISTS")
-          return {title, id: list.key}
+          return {title, tags, id: list.key}
       } catch (e) {
           console.log(e)
           throw e
@@ -95,6 +92,10 @@ export default {
       const uid = await dispatch('GET_ID')
       await firebase.database().ref().child(`/users/${uid}/lists/${index}`).remove()
       await commit('REMOVE_LIST', index)
+    },
+    EDIT_LIST: async ({dispatch}, newList) => {
+      const uid = await dispatch('GET_ID')
+      await firebase.database().ref().child(`/users/${uid}/lists/${newList.id}`).update({title: newList.title})
     },
 
     GET_TASKS: async ({ dispatch, commit}, listId) => {
@@ -123,7 +124,6 @@ export default {
       
       await firebase.database().ref(`/users/${uid}/tasks`).push({listid, title, isUrgent, isComplete, date})
       await firebase.database().ref(`/users/${uid}/lists/${listid}`).update({completed: isComplete})
-      // await dispatch('GET_LISTS')
       await commit('ADD_TASK', {listid, title, isUrgent, isComplete, date})
     },
 
@@ -135,7 +135,7 @@ export default {
 
       let t = await dispatch('GET_TASKS', listId)
 
-      await firebase.database().ref(`/users/${uid}/lists/${listId}`).update({completed: {}}).then(console.log('SSSS'))
+      await firebase.database().ref(`/users/${uid}/lists/${listId}`).update({completed: {}})
       await firebase.database().ref().child(`/users/${uid}/tasks/${t[index].id}`).remove()
       await commit('REMOVE_TASK', t[index].id)
     },

@@ -39,9 +39,15 @@
           </v-list-item>
         </v-list-group>
 
-<!--  v-colored="list.completed" -->
+        <v-list-item>
+          <v-text-field v-model="search" solo label="search" append-icon="clear" @click:append="clearSearch" placeholder="Поиск по названию" @keyup.enter="searchList(search)">
+          </v-text-field>
+        </v-list-item>
+
+
         <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)"
-        :style="{'background-color': list.completed == null ? 'white' : list.completed ? '#AED581' : '#E0E0E0'}" v-model="listsWithId.completed">
+        :style="{'background-color': list.completed == null ? 'white' : list.completed ? '#AED581' : '#E0E0E0'}" 
+        v-model="listsWithId.completed">
           <v-list-item-action>
             <v-tooltip bottom>
               <template v-slot:activator="{on}">
@@ -51,14 +57,32 @@
               </template>
               <span>Удалить задачу</span>
             </v-tooltip>
-            
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title >{{ list.title }}</v-list-item-title>
+            <v-list-item-title>{{ list.title }}</v-list-item-title>
           </v-list-item-content>
+
+
+          <v-list-item-action v-for="(tag, idx) in list.tags" :key="idx">
+            <v-chip v-if="list.tags" class="ma-2" @click.prevent="filterTag(tag)">
+              {{ tag }}
+            </v-chip>
+          </v-list-item-action>
+
+
+          <v-list-item-action>
+            <v-tooltip bottom>
+              <template v-slot:activator="{on}">
+                <v-btn icon @click.stop="openEditModal(list.title, list.id)" v-on="on">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+              </template>
+              <span>Изменить название</span>
+            </v-tooltip>
+          </v-list-item-action>
+
         </v-list-item>
-        
       </v-list>
 
       <v-divider></v-divider>
@@ -80,6 +104,9 @@
 
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" @deleteList="deleteList(paramsModal.listId)" />
+
+    <PopupEdit v-if="paramsModal.openEdit" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
+      :listId="paramsModal.listId" @editList="editList(paramsModal.title = $event)" />
   </div>
 
 </template>
@@ -87,23 +114,27 @@
 <script>
   import NewList from './NewList'
   import PopupDelete from './Popups/PopupDelete'
+  import PopupEdit from './Popups/PopupEdit'
   import { mapGetters } from 'vuex'
 
   export default {
     name: 'lists',
     components: {
       NewList,
-      PopupDelete
+      PopupDelete,
+      PopupEdit
     },
     data: () => ({
+      search: '',
       listsWithId: [],
       isCompleted: [],
       tasks: [],
       error: '',
       paramsModal: {
         open: false,
+        openEdit: false,
         title: '',
-        listId: undefined
+        listId: undefined,
       },
 
       sortItem: {
@@ -156,6 +187,31 @@
     },
  
     methods: {
+      filterTag(tag) {
+        console.log(tag, this.listsWithId.tags)
+        let newLists = []
+        
+        for (let i = 0; i < this.listsWithId.length; i++) {
+          if (this.listsWithId[i].tags && this.listsWithId[i].tags.includes(tag)) {
+            newLists.push(this.listsWithId[i])
+          }
+        }
+        if (newLists) {
+          this.$store.commit("SET_LISTS", newLists)
+        }
+
+      },
+      async searchList(title) {
+        this.listsWithId = await this.$store.dispatch('GET_LISTS')
+        let newLists = this.listsWithId.filter(list => list.title === title)
+        this.$store.commit("SET_LISTS", newLists)
+        
+      },
+      clearSearch() {
+        this.search = ''
+        this.$store.commit("SET_LISTS", this.listsWithId )
+      },
+
       sort() {
         this.$store.commit('SORT')
       },
@@ -174,6 +230,7 @@
       },
       async closePopup() {
         this.paramsModal.open = false
+        this.paramsModal.openEdit = false
         this.listsWithId = await this.$store.dispatch('GET_LISTS')
 
       },
@@ -181,6 +238,13 @@
         this.paramsModal.title = title
         this.paramsModal.listId = id
         this.paramsModal.open = true
+        this.paramsModal.openEdit = false
+      },
+      openEditModal(title, id) {
+        this.paramsModal.title = title
+        this.paramsModal.listId = id
+        this.paramsModal.openEdit = true
+        this.paramsModal.open = false
       },
 
       async toggle(idx) {
@@ -215,6 +279,10 @@
         } catch (error) {
           this.error = 'Не удалось удалить задачу'
         }
+      },
+      async editList(newList) {
+        this.paramsModal.open = false
+        await this.$store.dispatch('EDIT_LIST', newList)
       },
     }
   }
