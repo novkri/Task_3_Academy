@@ -44,6 +44,12 @@
           </v-text-field>
         </v-list-item>
 
+        <v-list-item v-if="activeTag.length > 0">
+          <span>Выбранные теги: </span> <v-spacer></v-spacer>
+          <v-chip v-for="(active, index) in activeTag" :key="index" close @click:close="remove(active)">
+            {{ active }}
+          </v-chip>
+        </v-list-item>
 
         <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)"
         :style="{'background-color': list.completed == null ? 'white' : list.completed ? '#AED581' : '#E0E0E0'}" 
@@ -65,7 +71,9 @@
 
 
           <v-list-item-action v-for="(tag, idx) in list.tags" :key="idx">
-            <v-chip v-if="list.tags" class="ma-2" @click.prevent="filterTag(tag)">
+            <v-chip v-if="list.tags" class="ma-2" @click="filterTag(tag)" 
+            :style="{'background-color': activeTag.includes(tag) ? '#EF5350' : '#F5F5F5'}"
+            >
               {{ tag }}
             </v-chip>
           </v-list-item-action>
@@ -127,6 +135,7 @@
     data: () => ({
       search: '',
       listsWithId: [],
+      activeTag: [],
       isCompleted: [],
       tasks: [],
       error: '',
@@ -165,12 +174,7 @@
         console.log(error)
       }
     },
-    // watch: {
-    //   ...mapGetters(['LISTS']),
-    //   listsWithId: function() {
-    //     console.log('done', this.$store.getters.LISTS);
-    //   }
-    // },
+
     computed: {
       ...mapGetters(['LISTS']),
       openNewListFormValue: {
@@ -187,18 +191,41 @@
     },
  
     methods: {
-      filterTag(tag) {
-        console.log(tag, this.listsWithId.tags)
+      remove(active) {
+        this.activeTag.splice(this.activeTag.indexOf(active), 1)
+        console.log(this.activeTag, ...this.activeTag);
+ 
         let newLists = []
-        
         for (let i = 0; i < this.listsWithId.length; i++) {
-          if (this.listsWithId[i].tags && this.listsWithId[i].tags.includes(tag)) {
+          if (this.listsWithId[i].tags && this.listsWithId[i].tags.includes(...this.activeTag)) {
             newLists.push(this.listsWithId[i])
           }
         }
-        if (newLists) {
+        if (this.activeTag.length) {
           this.$store.commit("SET_LISTS", newLists)
+        } 
+        else {
+          // this.listsWithId = await this.$store.dispatch('GET_LISTS')
+          this.$store.commit("SET_LISTS", this.listsWithId)
         }
+      },
+
+      filterTag(tag) {
+        if (!this.activeTag.includes(tag)) {
+          this.activeTag.push(tag)
+
+          let newLists = []
+
+          for (let i = 0; i < this.listsWithId.length; i++) {
+            if (this.listsWithId[i].tags && this.listsWithId[i].tags.includes(tag)) {
+              newLists.push(this.listsWithId[i])
+            }
+          }
+          if (newLists) {
+            this.$store.commit("SET_LISTS", newLists)
+          }
+        }
+
 
       },
       async searchList(title) {
