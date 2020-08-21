@@ -52,9 +52,9 @@
       </v-card-actions>
     </v-card>
 
-    <v-snackbar v-model="error" v-if="error">
+    <!-- <v-snackbar v-model="error" v-if="error">
       {{ error }} 
-    </v-snackbar>
+    </v-snackbar> -->
 
     <PopupDelete v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :val="paramsModal.title"
       :listId="paramsModal.listId" :taskId="paramsModal.taskId" @deleteList="deleteList(paramsModal.taskId)" />

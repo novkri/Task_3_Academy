@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  import PopupAdd from './Popups/PopupAdd'
+import PopupAdd from './Popups/PopupAdd'
 import { mapGetters } from 'vuex';
 
   export default {
@@ -52,8 +52,9 @@ import { mapGetters } from 'vuex';
     components: {
       PopupAdd
     },
-      computed: {
-        ...mapGetters(['LISTS']),
+    computed: {
+      ...mapGetters(['LISTS']),
+      ...mapGetters(['TASKS']),
     },
     
     methods: {
@@ -65,25 +66,19 @@ import { mapGetters } from 'vuex';
         this.paramsModal.titleTask = title
         this.paramsModal.titleList = this.lists[this.$route.params.id].title
 
-        let t = await this.$store.dispatch('GET_TASKS', this.paramsModal.listId)
-        for (let i = 0; i < t.length; i++) {
-          console.log(t);
-          if (Object.values(t)[i].title == this.title) {
-            console.log('got one')
-            this.error = 'Подзадача с таким именем уже существует'
-            this.paramsModal.open = false
-          }
-          else {
-            this.paramsModal.open = true
-          }
+
+        let f = this.TASKS.filter(t => t.title === title)
+        if (f.length > 0) {
+          this.error = 'Подзадача с таким именем уже существует'
+          this.paramsModal.open = false
+        } else {
+          this.paramsModal.open = true
         }
-         console.log('submit', this.paramsModal, this.lists);
+
       },
 
       async closePopup() {
         this.paramsModal.open = false
-
-          
 
         try {
           await this.$store.dispatch("NEW_POST_TASK", {

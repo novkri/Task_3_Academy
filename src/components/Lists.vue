@@ -105,6 +105,7 @@
             <NewList />
           </v-col>
         </v-row>
+        
       </v-card-actions>
 
 
@@ -191,17 +192,6 @@
       isOpen() {
         return this.$store.getters.NEW_LIST_FORM
       },
-
-      // LISTS() {
-      //   console.log('sss',this.search);
-        
-      //   // this.listsWithId = await this.$store.dispatch('GET_LISTS')
-      // //   let newLists = this.listsWithId.filter(list => list.title === title)
-      // //   
-      //   let newLists = this.listsWithId.filter(list => list.title.toLowerCase().includes(this.search.toLowerCase()))
-      //   // this.$store.commit("SET_LISTS", newLists)
-      //   return newLists
-      // }
     },
  
     methods: {

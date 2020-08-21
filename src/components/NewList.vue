@@ -26,12 +26,14 @@
     {{ error }} 
   </v-snackbar>
 
-  <PopupAdd v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" :titleTask="paramsModal.titleTask" :titleList="paramsModal.titleList"/>
+  <PopupAdd v-if="paramsModal.open" @closePopup="closePopup" v-model="paramsModal" 
+  :titleTask="paramsModal.titleTask" :titleList="paramsModal.titleList"/>
 </div>
 </template>
 
 <script>
 import PopupAdd from './Popups/PopupAdd'
+import { mapGetters } from 'vuex';
 
   export default {
     name: 'newList',
@@ -53,9 +55,12 @@ import PopupAdd from './Popups/PopupAdd'
     components: {
       PopupAdd
     },
+    computed: {
+      ...mapGetters(['LISTS']),
+    },
     methods: {
       async submit(title, tags) {
-        console.log(title, tags)
+
         this.paramsModal.titleTask = title
 
         if (tags.length > 0) {
@@ -64,17 +69,27 @@ import PopupAdd from './Popups/PopupAdd'
         }
         
 
-        let t = await this.$store.dispatch('GET_LISTS')
-        for (let i = 0; i < t.length; i++) {
-          if (Object.values(t)[i].title == this.title) {
-            console.log('got one')
-            this.error = 'Задача с таким именем уже существует'
-            this.paramsModal.open = false
-          }
-          else {
-            this.paramsModal.open = true
-          }
+        let f = this.LISTS.filter(t => t.title === title)
+        if (f.length > 0) {
+           console.log(this.paramsModal, "s");
+          this.error = 'Задача с таким именем уже существует'
+          this.paramsModal.open = false
+        } else {
+           console.log(this.paramsModal);
+          this.paramsModal.open = true
         }
+
+        // let t = await this.$store.dispatch('GET_LISTS')
+        // for (let i = 0; i < t.length; i++) {
+        //   if (Object.values(t)[i].title == this.title) {
+        //     console.log('got one')
+        //     this.error = 'Задача с таким именем уже существует'
+        //     this.paramsModal.open = false
+        //   }
+        //   else {
+        //     this.paramsModal.open = true
+        //   }
+        // }
 
       },
       async closePopup() {
