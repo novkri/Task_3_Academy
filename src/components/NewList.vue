@@ -18,9 +18,6 @@
             <v-icon>add</v-icon> Добавить
           </v-btn>
         </v-col>
-
-        <v-col cols="12" lg="2">
-        </v-col>
       </v-row>
     </v-container>
   </v-form>
@@ -58,9 +55,14 @@ import PopupAdd from './Popups/PopupAdd'
     },
     methods: {
       async submit(title, tags) {
-        console.log(title, tags);
+        console.log(title, tags)
         this.paramsModal.titleTask = title
-        this.paramsModal.tags = tags.split(",")
+
+        if (tags.length > 0) {
+          this.paramsModal.tags = tags.split(", ")
+          console.log(this.paramsModal.tags);
+        }
+        
 
         let t = await this.$store.dispatch('GET_LISTS')
         for (let i = 0; i < t.length; i++) {
@@ -78,7 +80,12 @@ import PopupAdd from './Popups/PopupAdd'
       async closePopup() {
         this.paramsModal.open = false
         try {
-          await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim(), tags: this.tags.split(",")})
+          if ( this.tags.length > 0) {
+            await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim(), tags: this.tags.split(", ")})
+          } else {
+            await this.$store.dispatch("NEW_LIST_POST", { title: this.title.trim(), tags: []})
+          }
+          
           
         } catch (error) {
           this.error = 'Не удалось добавить задачу'

@@ -39,16 +39,20 @@
           </v-list-item>
         </v-list-group>
 
-        <v-list-item>
-          <v-text-field v-model="search" solo label="search" append-icon="clear" @click:append="clearSearch" placeholder="Поиск по названию" @keyup.enter="searchList(search)">
-          </v-text-field>
+        <v-list-item class="d-flex align-baseline">
+          <v-text-field v-model="search" solo label="search" append-icon="clear" @click:append="clearSearch" placeholder="Поиск по названию" 
+           @keyup.enter="searchList(search)"></v-text-field>
+
+           <v-btn class="ma-5" @click="searchList(search)">
+             <v-icon>search</v-icon>
+           </v-btn>
         </v-list-item>
 
         <v-list-item v-if="activeTag.length > 0">
-          <span>Выбранные теги: </span> <v-spacer></v-spacer>
-          <v-chip v-for="(active, index) in activeTag" :key="index" close @click:close="remove(active)">
-            {{ active }}
-          </v-chip>
+            <span class="font-weight-black mr-5" >Выбранные теги: </span>
+            <v-chip v-for="(active, index) in activeTag" :key="index" close @click:close="remove(active)" class="mr-5">
+              {{ active }}
+            </v-chip>
         </v-list-item>
 
         <v-list-item v-for="(list, i) in LISTS" :key="i" @click="toggle(i)"
@@ -72,7 +76,7 @@
 
           <v-list-item-action v-for="(tag, idx) in list.tags" :key="idx">
             <v-chip v-if="list.tags" class="ma-2" @click="filterTag(tag)" 
-            :style="{'background-color': activeTag.includes(tag) ? '#EF5350' : '#F5F5F5'}"
+            :style="{'background-color': activeTag.includes(tag) ? '#64B5F6' : '#F5F5F5'}"
             >
               {{ tag }}
             </v-chip>
@@ -174,7 +178,6 @@
         console.log(error)
       }
     },
-
     computed: {
       ...mapGetters(['LISTS']),
       openNewListFormValue: {
@@ -188,6 +191,17 @@
       isOpen() {
         return this.$store.getters.NEW_LIST_FORM
       },
+
+      // LISTS() {
+      //   console.log('sss',this.search);
+        
+      //   // this.listsWithId = await this.$store.dispatch('GET_LISTS')
+      // //   let newLists = this.listsWithId.filter(list => list.title === title)
+      // //   
+      //   let newLists = this.listsWithId.filter(list => list.title.toLowerCase().includes(this.search.toLowerCase()))
+      //   // this.$store.commit("SET_LISTS", newLists)
+      //   return newLists
+      // }
     },
  
     methods: {
@@ -205,7 +219,6 @@
           this.$store.commit("SET_LISTS", newLists)
         } 
         else {
-          // this.listsWithId = await this.$store.dispatch('GET_LISTS')
           this.$store.commit("SET_LISTS", this.listsWithId)
         }
       },
@@ -230,9 +243,8 @@
       },
       async searchList(title) {
         this.listsWithId = await this.$store.dispatch('GET_LISTS')
-        let newLists = this.listsWithId.filter(list => list.title === title)
+        let newLists = this.listsWithId.filter(list => list.title.includes(title))
         this.$store.commit("SET_LISTS", newLists)
-        
       },
       clearSearch() {
         this.search = ''
@@ -303,6 +315,7 @@
         this.paramsModal.open = false
         try {
           await this.$store.dispatch("DELETE_LIST", {index})
+          this.$router.push('/')
         } catch (error) {
           this.error = 'Не удалось удалить задачу'
         }

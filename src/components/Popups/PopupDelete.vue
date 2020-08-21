@@ -44,7 +44,6 @@ export default {
 
     async deleteList(taskId) {
       await this.$emit('deleteList', taskId)
-      this.$router.push('/')
       this.$emit('closePopup')
     }
   }

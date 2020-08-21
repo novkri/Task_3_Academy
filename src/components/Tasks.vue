@@ -7,7 +7,8 @@
     <v-card style="height: 100%; overflow: hidden;">
       <v-list>
         <v-list-item>
-          <v-text-field v-model="search" solo label="search" append-icon="clear" @click:append="clearSearch" placeholder="Поиск по названию" @keyup.enter="searchTask(search)">
+          <v-text-field v-model="search" solo label="search" append-icon="clear" @click:append="clearSearch" 
+            placeholder="Поиск по названию" @keyup.enter="searchTask(search)">
           </v-text-field>
         </v-list-item>
       </v-list>
@@ -15,16 +16,16 @@
       <v-list two-line v-for="(task, index) in TASKS" :key="index">
 
         <v-list-item>
+
           <v-checkbox v-model="task.isComplete" color="success" @click="toggle(index, task.isComplete, task.title)"></v-checkbox>
 
           <v-list-item-content>
             <v-list-item-title>{{ task.title }}</v-list-item-title>
              <v-list-item-title>{{ task.date }}</v-list-item-title>
-          </v-list-item-content>
+          </v-list-item-content> 
 
           <v-icon v-if="task.isUrgent" color="red">warning</v-icon>
           <v-icon v-else></v-icon>
-     
 
           <v-list-item-action>
             <v-tooltip bottom>
@@ -90,12 +91,6 @@
         listId: ''
       },
     }),
-    // watch: {
-    //   ...mapGetters(['TASKS']),
-    //   tasks: function() {
-    //     console.log('done', this.$store.getters.TASKS);
-    //   }
-    // },
 
     computed: {
       ...mapGetters(['TASKS']), 
@@ -109,7 +104,7 @@
     },
     methods: {
       async searchTask(title) {
-        let newTask = this.tasks.filter(task => task.title === title)
+        let newTask = this.tasks.filter(task => task.title.includes(title))
         console.log(title, newTask);
         this.$store.commit("SET_TASKS", newTask)
         
@@ -147,6 +142,7 @@
         this.paramsModal.taskId = id 
         this.paramsModal.listId = listid
         this.paramsModal.open = true
+        console.log(this.paramsModal);
       },
 
       async deleteList(index) {

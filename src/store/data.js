@@ -48,7 +48,6 @@ export default {
       })
     },
 
-
     SET_TASKS: (state, payload) => {
       state.tasks = payload
     },
@@ -115,7 +114,6 @@ export default {
         }
       }
       commit("SET_TASKS", tasksFiltered)
-      // commit("SET_COMPLETED", isCompleted)
       return tasksFiltered
     },
 
@@ -130,12 +128,12 @@ export default {
     DELETE_TASK: async ({dispatch, commit }, {thisListId, index}) => {
       console.log("DELETE_TASK",thisListId, index)
       const uid =  await dispatch('GET_ID')
-      let r = await dispatch('GET_LISTS')
+      let r = await dispatch('GET_LISTS') 
       let listId = r[thisListId].id
 
       let t = await dispatch('GET_TASKS', listId)
 
-      await firebase.database().ref(`/users/${uid}/lists/${listId}`).update({completed: {}})
+      await firebase.database().ref(`/users/${uid}/lists/${listId}`).update({completed: false})
       await firebase.database().ref().child(`/users/${uid}/tasks/${t[index].id}`).remove()
       await commit('REMOVE_TASK', t[index].id)
     },
@@ -159,13 +157,6 @@ export default {
       }
 
       console.log(tasksFiltered[taskId].id, thisListId, taskId, isComplete, title)
-      // let thisTaskId = ''
-
-      // for (let i = 0; i < Object.keys(t).length; i++) {
-      //   if (Object.values(t)[i].listid == thisListId && Object.values(t)[i].title == title) {
-      //       thisTaskId =  Object.keys(t)[i]
-      //   }
-      // }
       await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: false})
       await firebase.database().ref(`/users/${uid}/tasks/${tasksFiltered[taskId].id}`).update({isComplete})
       
@@ -182,8 +173,6 @@ export default {
         await firebase.database().ref(`/users/${uid}/lists/${thisListId}`).update({completed: true})
 
       }
-      // await commit('SET_LIST_STATUS', thisListId)
-      // await dispatch('GET_LISTS')
     }
   }
 }

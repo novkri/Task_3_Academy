@@ -58,24 +58,26 @@ import { mapGetters } from 'vuex';
     
     methods: {
       async submit(title) {
+
         this.lists = await this.$store.dispatch("GET_LISTS")
       
         this.paramsModal.listId = this.lists[this.$route.params.id].id
         this.paramsModal.titleTask = title
         this.paramsModal.titleList = this.lists[this.$route.params.id].title
 
-        // let t = await this.$store.dispatch('GET_TASKS', this.paramsModal.listId)
-        // for (let i = 0; i < t.length; i++) {
-        //   console.log(t);
-        //   if (Object.values(t)[i].title == this.title) {
-        //     console.log('got one')
-        //     this.error = 'Подзадача с таким именем уже существует'
-        //     this.paramsModal.open = false
-        //   }
-        //   else {
+        let t = await this.$store.dispatch('GET_TASKS', this.paramsModal.listId)
+        for (let i = 0; i < t.length; i++) {
+          console.log(t);
+          if (Object.values(t)[i].title == this.title) {
+            console.log('got one')
+            this.error = 'Подзадача с таким именем уже существует'
+            this.paramsModal.open = false
+          }
+          else {
             this.paramsModal.open = true
-        //   }
-        // }
+          }
+        }
+         console.log('submit', this.paramsModal, this.lists);
       },
 
       async closePopup() {
